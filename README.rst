@@ -1,0 +1,69 @@
+===============================================
+color-hash: Generate a Color Based on a Value
+===============================================
+
+This module generates a color based on an object, by calculating a color value
+based on a hash value for the object. This means the result is deterministic:
+the same value will always result in the same color (so long as the hash
+function remains deterministic).
+
+This module is a port of the `'color-hash' Javascript library`_. It supports
+Python 2.6, 2.7, and 3.3+.
+
+.. _'color-hash' Javascript library: https://github.com/zenozeng/color-hash
+
+
+Quick Start
+===========
+
+::
+
+    >>> from colorhash import ColorHash
+    >>> c = ColorHash('Hello World')
+    >>> c.hsl
+    (131, 0.65, 0.5)
+    >>> c.rgb
+    (45, 210, 75)
+    >>> c.hex
+    '#2dd24b'
+
+
+Changelog
+=========
+
+* color-hash 1.0.2 *(2016-07-08)*
+
+  - Add ``crc32_hash`` function and set default hashfunc to that. It's not
+    fully backwards-compatible, but I don't want to bump the version a lot for
+    not doing my research.
+
+* color-hash 1.0.0 *(2016-07-07)*
+
+  - Initial port.
+
+
+License
+=======
+
+Copyright (c) 2016 Felix Krull <f_krull@gmx.de>
+
+This is a port of the 'color-hash' Javascript library which is:
+
+Copyright (c) 2015 Zeno Zeng
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
