@@ -17,13 +17,8 @@ Quick start:
 '#2dd24b'
 """
 
-from __future__ import division
 from binascii import crc32
 from numbers import Number
-import sys
-
-
-PY2 = sys.version_info[0] <= 2
 
 
 def crc32_hash(obj):
@@ -34,10 +29,7 @@ def crc32_hash(obj):
     hash is guaranteed to be as stable as the result of the object's ``__str__``
     method.
     """
-    if PY2:
-        bs = str(obj)
-    else:
-        bs = str(obj).encode("utf-8")
+    bs = str(obj).encode("utf-8")
     return crc32(bs) & 0xFFFFFFFF
 
 

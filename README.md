@@ -1,49 +1,42 @@
-===============================================
-color-hash: Generate a Color Based on a Value
-===============================================
+# color-hash
+
+**Generate a color based on a value**
 
 This module generates a color based on an object, by calculating a color value
 based on a hash value for the object. This means the result is deterministic:
 the same value will always result in the same color (so long as the hash
 function remains deterministic).
 
-This module is a port of the `'color-hash' Javascript library`_. It supports
-Python 2.6, 2.7, and 3.3+.
+This module is a port of the [color-hash Javascript library](https://github.com/zenozeng/color-hash). It supports
+Python 3.4+.
 
-.. _'color-hash' Javascript library: https://github.com/zenozeng/color-hash
+## Quick Start
 
+```python
+>>> from colorhash import ColorHash
+>>> c = ColorHash('Hello World')
+>>> c.hsl
+(131, 0.65, 0.5)
+>>> c.rgb
+(45, 210, 75)
+>>> c.hex
+'#2dd24b'
+```
 
-Quick Start
-===========
+## Changelog
 
-::
-
-    >>> from colorhash import ColorHash
-    >>> c = ColorHash('Hello World')
-    >>> c.hsl
-    (131, 0.65, 0.5)
-    >>> c.rgb
-    (45, 210, 75)
-    >>> c.hex
-    '#2dd24b'
-
-
-Changelog
-=========
-
-* color-hash 1.0.2 *(2016-07-08)*
-
+- color-hash 1.0.3 *(2020-12-04)*
+  - Drop support for python 2
+  - Handover of project maintenance
+- color-hash 1.0.2 *(2016-07-08)*
   - Add ``crc32_hash`` function and set default hashfunc to that. It's not
     fully backwards-compatible, but I don't want to bump the version a lot for
     not doing my research.
-
-* color-hash 1.0.0 *(2016-07-07)*
-
+- color-hash 1.0.0 *(2016-07-07)*
   - Initial port.
 
 
-License
-=======
+## License
 
 Copyright (c) 2016 Felix Krull <f_krull@gmx.de>
 
