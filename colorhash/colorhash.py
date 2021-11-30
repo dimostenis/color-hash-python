@@ -16,13 +16,15 @@ Quick start:
 >>> c.hex
 '#2dd24b'
 """
-
 from binascii import crc32
 from numbers import Number
+from typing import Any
+from typing import Tuple
 
 
-def crc32_hash(obj):
-    """Generate a hash for ``obj``.
+def crc32_hash(obj: Any):
+    """
+    Generate a hash for ``obj``.
 
     This function first converts the object to a string and encodes it into
     UTF-8, then calculates and returns the CRC-32 checksum of the result. The
@@ -33,8 +35,9 @@ def crc32_hash(obj):
     return crc32(bs) & 0xFFFFFFFF
 
 
-def hsl2rgb(hsl):
-    """Convert an HSL color value into RGB.
+def hsl2rgb(hsl: Tuple[int, float, float]):
+    """
+    Convert an HSL color value into RGB.
 
     >>> hsl2rgb((0, 1, 0.5))
     (255, 0, 0)
@@ -70,8 +73,9 @@ def hsl2rgb(hsl):
     return tuple(rgb)
 
 
-def rgb2hex(rgb):
-    """Format an RGB color value into a hexadecimal color string.
+def rgb2hex(rgb: Tuple[int, int, int]):
+    """
+    Format an RGB color value into a hexadecimal color string.
 
     >>> rgb2hex((255, 0, 0))
     '#ff0000'
@@ -83,14 +87,15 @@ def rgb2hex(rgb):
 
 
 def color_hash(
-    obj,
+    obj: Any,
     hashfunc=crc32_hash,
     lightness=(0.35, 0.5, 0.65),
     saturation=(0.35, 0.5, 0.65),
     min_h=None,
     max_h=None,
 ):
-    """Calculate the color for the given object.
+    """
+    Calculate the color for the given object.
 
     Args:
         obj: the value.
@@ -131,7 +136,8 @@ def color_hash(
 
 
 class ColorHash:
-    """Generate a color value and provide it in several format.
+    """
+    Generate a color value and provide it in several format.
 
     This class takes the same arguments as the ``color_hash`` function.
 

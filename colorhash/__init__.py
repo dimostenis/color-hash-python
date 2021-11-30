@@ -1,3 +1,3 @@
-from .colorhash import ColorHash
+from colorhash.colorhash import ColorHash
 
-__all__ = [ColorHash]
+__all__ = ["ColorHash"]

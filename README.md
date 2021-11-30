@@ -25,6 +25,9 @@ Python 3.4+.
 
 ## Changelog
 
+- color-hash 1.0.4 *(2021-11-30)*
+  - Support only for python 3.6+
+  - Add tests
 - color-hash 1.0.3 *(2020-12-04)*
   - Drop support for python 2
   - Handover of project maintenance

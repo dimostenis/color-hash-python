@@ -1,8 +1,10 @@
-**/__pycache__
+__pycache__
 
-.venv/
-dist/
-
+.mypy_cache
+.pytest_cache
+.venv
 .vscode
-.python-version
+
+dist
+
 poetry.lock
