@@ -2,8 +2,9 @@ __pycache__
 
 .mypy_cache
 .pytest_cache
-.venv
+.venv*
 .vscode
+.tox
 
 dist
 
