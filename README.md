@@ -7,8 +7,8 @@ based on a hash value for the object. This means the result is deterministic:
 the same value will always result in the same color (so long as the hash
 function remains deterministic).
 
-This module is a port of the [color-hash Javascript library](https://github.com/zenozeng/color-hash). It supports
-Python 3.4+.
+This module is a port of the [color-hash Javascript library](https://github.com/zenozeng/color-hash).
+It supports Python 3.6+.
 
 ## Quick Start
 
@@ -23,8 +23,19 @@ Python 3.4+.
 '#2dd24b'
 ```
 
+## Installation
+
+Its hosted on PyPI.
+
+```bash
+pip install colorhash
+```
+
 ## Changelog
 
+- color-hash 1.1.0 *(2022-09-01)*
+  - Add tests
+  - Add installation instructions
 - color-hash 1.0.4 *(2021-11-30)*
   - Support only for python 3.6+
   - Add tests
