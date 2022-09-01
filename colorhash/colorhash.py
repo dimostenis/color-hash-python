@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2016 Felix Krull <f_krull@gmx.de>
-# Released under the terms of the MIT license; see README.rst.
+# Released under the terms of the MIT license; see README.md.
 
 """
 Generate a color based on an object's hash value.
@@ -16,13 +16,14 @@ Quick start:
 >>> c.hex
 '#2dd24b'
 """
+from __future__ import annotations
+
 from binascii import crc32
 from numbers import Number
 from typing import Any
-from typing import Tuple
 
 
-def crc32_hash(obj: Any):
+def crc32_hash(obj: Any) -> int:
     """
     Generate a hash for ``obj``.
 
@@ -35,7 +36,7 @@ def crc32_hash(obj: Any):
     return crc32(bs) & 0xFFFFFFFF
 
 
-def hsl2rgb(hsl: Tuple[int, float, float]):
+def hsl2rgb(hsl: tuple[int | float, int | float, int | float]) -> tuple[int, int, int]:
     """
     Convert an HSL color value into RGB.
 
@@ -43,17 +44,14 @@ def hsl2rgb(hsl: Tuple[int, float, float]):
     (255, 0, 0)
     """
     try:
-        h, s, l = hsl
-    except TypeError:
-        raise ValueError(hsl)
-    try:
+        h, s, l = hsl  # noqa, I tolerate "l"
         h /= 360
         q = l * (1 + s) if l < 0.5 else l + s - l * s
         p = 2 * l - q
     except TypeError:
         raise ValueError(hsl)
 
-    rgb = []
+    rgb: list[int] = []
     for c in (h + 1 / 3, h, h - 1 / 3):
         if c < 0:
             c += 1
@@ -70,10 +68,10 @@ def hsl2rgb(hsl: Tuple[int, float, float]):
             c = p
         rgb.append(round(c * 255))
 
-    return tuple(rgb)
+    return tuple(rgb)  # noqa
 
 
-def rgb2hex(rgb: Tuple[int, int, int]):
+def rgb2hex(rgb: tuple[int, int, int]) -> str:
     """
     Format an RGB color value into a hexadecimal color string.
 
@@ -93,7 +91,7 @@ def color_hash(
     saturation=(0.35, 0.5, 0.65),
     min_h=None,
     max_h=None,
-):
+) -> tuple[int, float, float]:
     """
     Calculate the color for the given object.
 
@@ -130,7 +128,7 @@ def color_hash(
     hash //= 360
     s = saturation[hash % len(saturation)]
     hash //= len(saturation)
-    l = lightness[hash % len(lightness)]
+    l = lightness[hash % len(lightness)]  # noqa, I tolerate "l"
 
     return (h, s, l)
 
@@ -148,12 +146,12 @@ class ColorHash:
     """
 
     def __init__(self, *args, **kwargs):
-        self.hsl = color_hash(*args, **kwargs)
+        self.hsl: tuple[int, float, float] = color_hash(*args, **kwargs)
 
     @property
-    def rgb(self):
+    def rgb(self) -> tuple[int, int, int]:
         return hsl2rgb(self.hsl)
 
     @property
-    def hex(self):
+    def hex(self) -> str:
         return rgb2hex(self.rgb)
