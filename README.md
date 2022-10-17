@@ -33,6 +33,10 @@ pip install colorhash
 
 ## Changelog
 
+- color-hash 1.2.2 *(2022-10-17)*
+  - Add publish helper script
+- color-hash 1.2.1 *(2022-10-17)*
+  - Update docs
 - color-hash 1.2.0 *(2022-10-17)*
   - Use typing supporting python3.6
 - color-hash 1.1.0 *(2022-09-01)*
