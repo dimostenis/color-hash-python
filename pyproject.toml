@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "colorhash"
-version = "1.1.0"
+version = "1.2.0"
 description = "Generate color based on any object"
 authors = ["dimostenis <dimosh3k@gmail.com>", "Felix Krull <f_krull@gmx.de>"]
 license = "MIT"
@@ -16,7 +16,7 @@ keywords = ["color", "hash", "rgb", "hsl", "hex"]
 "Bug Tracker" = "https://github.com/dimostenis/color-hash-python/issues"
 
 [tool.poetry.dependencies]
-python = ">=3.6.2,<4.0"
+python = ">=3.6,<4.0"
 
 [tool.poetry.dev-dependencies]
 black = "*"
@@ -35,10 +35,10 @@ force_single_line = true
 line-length = 88
 
 [tool.tox]
-legacy_tox_ini = """
+legacy_tox_ini = """\
 [tox]
 isolated_build = True
-envlist = python3.6,python3.7,python3.8,python3.9,python3.10
+envlist = python3.6,python3.7,python3.8,python3.9,python3.10,pypy3.9
 
 [testenv]
 deps = pytest

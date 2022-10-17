@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright (c) 2016 Felix Krull <f_krull@gmx.de>
 # Released under the terms of the MIT license; see README.md.
 
@@ -16,11 +15,13 @@ Quick start:
 >>> c.hex
 '#2dd24b'
 """
-from __future__ import annotations
-
 from binascii import crc32
 from numbers import Number
 from typing import Any
+from typing import Tuple
+from typing import Union
+
+IntOrFloat = Union[int, float]
 
 
 def crc32_hash(obj: Any) -> int:
@@ -36,7 +37,7 @@ def crc32_hash(obj: Any) -> int:
     return crc32(bs) & 0xFFFFFFFF
 
 
-def hsl2rgb(hsl: tuple[int | float, int | float, int | float]) -> tuple[int, int, int]:
+def hsl2rgb(hsl: Tuple[IntOrFloat, float, float]) -> Tuple[int, int, int]:
     """
     Convert an HSL color value into RGB.
 
@@ -71,7 +72,7 @@ def hsl2rgb(hsl: tuple[int | float, int | float, int | float]) -> tuple[int, int
     return tuple(rgb)  # noqa
 
 
-def rgb2hex(rgb: tuple[int, int, int]) -> str:
+def rgb2hex(rgb: Tuple[int, int, int]) -> str:
     """
     Format an RGB color value into a hexadecimal color string.
 
@@ -91,7 +92,7 @@ def color_hash(
     saturation=(0.35, 0.5, 0.65),
     min_h=None,
     max_h=None,
-) -> tuple[int, float, float]:
+) -> Tuple[int, float, float]:
     """
     Calculate the color for the given object.
 
@@ -146,10 +147,10 @@ class ColorHash:
     """
 
     def __init__(self, *args, **kwargs):
-        self.hsl: tuple[int, float, float] = color_hash(*args, **kwargs)
+        self.hsl: Tuple[int, float, float] = color_hash(*args, **kwargs)
 
     @property
-    def rgb(self) -> tuple[int, int, int]:
+    def rgb(self) -> Tuple[int, int, int]:
         return hsl2rgb(self.hsl)
 
     @property
