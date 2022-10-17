@@ -33,6 +33,8 @@ pip install colorhash
 
 ## Changelog
 
+- color-hash 1.2.0 *(2022-10-17)*
+  - Use typing supporting python3.6
 - color-hash 1.1.0 *(2022-09-01)*
   - Add tests
   - Add installation instructions
@@ -48,7 +50,6 @@ pip install colorhash
     not doing my research.
 - color-hash 1.0.0 *(2016-07-07)*
   - Initial port.
-
 
 ## License
 
