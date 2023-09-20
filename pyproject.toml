@@ -1,30 +1,21 @@
-[tool.poetry]
+[project]
+requires-python = ">=3.6"
 name = "colorhash"
-version = "1.2.2"
 description = "Generate color based on any object"
-authors = ["dimostenis <dimosh3k@gmail.com>", "Felix Krull <f_krull@gmx.de>"]
-license = "MIT"
-include = ["README.md"]
-
+license = { text = "MIT" }
+version = "1.3.0"
 readme = "README.md"
-homepage = "https://github.com/dimostenis/color-hash-python"
-repository = "https://pypi.org/project/colorhash/"
-
+authors = [
+  { name = "dimostenis", email = "dimosh3k@gmail.com" },
+  { name = "Felix Krull", email = "f_krull@gmx.de" },
+]
 keywords = ["color", "hash", "rgb", "hsl", "hex"]
-
-[tool.poetry.urls]
+dependencies = []
+[project.urls]
+Homepage = "https://github.com/dimostenis/color-hash-python"
 "Bug Tracker" = "https://github.com/dimostenis/color-hash-python/issues"
-
-[tool.poetry.dependencies]
-python = ">=3.6,<4.0"
-
-[tool.poetry.dev-dependencies]
-black = "*"
-flake8 = "*"
-mypy = "*"
-pre-commit = "*"
-pytest = "^6"
-tox = "^3"
+[project.optional-dependencies]
+dev = ["black", "pre-commit", "pytest"]
 
 [tool.isort]
 profile = "black"
@@ -34,17 +25,23 @@ force_single_line = true
 [tool.black]
 line-length = 88
 
-[tool.tox]
-legacy_tox_ini = """\
-[tox]
-isolated_build = True
-envlist = python3.6,python3.7,python3.8,python3.9,python3.10,pypy3.9
+[tool.mypy]
+enable_error_code = ["truthy-bool"]
 
-[testenv]
-deps = pytest
-commands = pytest
-"""
+[tool.refurb]
+# FURB145 Replace `x[:]` with `x.copy()`
+ignore = ["FURB145"]
 
 [build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+exclude = ["/test", ".gitignore", ".pre-commit-config.yaml", "makefile"]
+
+[tool.hatch.envs.test]
+dependencies = ["pytest"]
+[tool.hatch.envs.test.scripts]
+test = "pytest"
+[[tool.hatch.envs.test.matrix]]
+python = ["3.7", "3.8", "3.9", "3.10", "3.11"]

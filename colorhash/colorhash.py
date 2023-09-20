@@ -45,7 +45,7 @@ def hsl2rgb(hsl: Tuple[IntOrFloat, float, float]) -> Tuple[int, int, int]:
     (255, 0, 0)
     """
     try:
-        h, s, l = hsl  # noqa, I tolerate "l"
+        h, s, l = hsl  # noqa
         h /= 360
         q = l * (1 + s) if l < 0.5 else l + s - l * s
         p = 2 * l - q
@@ -129,7 +129,7 @@ def color_hash(
     hash //= 360
     s = saturation[hash % len(saturation)]
     hash //= len(saturation)
-    l = lightness[hash % len(lightness)]  # noqa, I tolerate "l"
+    l = lightness[hash % len(lightness)]  # noqa
 
     return (h, s, l)
 
