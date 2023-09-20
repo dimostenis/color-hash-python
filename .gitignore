@@ -1,13 +1,19 @@
+,*
+
 __pycache__
 
 .mypy_cache
 .pytest_cache
+.ruff_cache
+.tox
 .venv*
 .vscode
-.tox
 
 dist
 
 poetry.lock
 
-.pypi-token
+.DS_Store
+.pypirc
+
+requirements-dev.txt

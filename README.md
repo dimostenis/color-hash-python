@@ -8,7 +8,8 @@ the same value will always result in the same color (so long as the hash
 function remains deterministic).
 
 This module is a port of the [color-hash Javascript library](https://github.com/zenozeng/color-hash).
-It supports Python 3.6+.
+
+It supports Python 3.7+ and it has no dependencies.
 
 ## Quick Start
 
@@ -33,27 +34,37 @@ pip install colorhash
 
 ## Changelog
 
+- color-hash 1.3.0 *(2023-09-20)*
+  - 🧑‍💻 Add `py.typed` to support type annotations (#4)
+  - 📦 Changed packaging ecosystem
+    - ➖ Remove `poetry`
+    - ➖ Remove `tox`
+    - ➕ Add `pip-tools` (manage dependencies)
+    - ➕ Add `hatch` (build & test)
+    - ➕ Add `twine` (publish)
+  - ✨ Support `python3.11`
+  - ⚰️ Drop support for `python3.6`
 - color-hash 1.2.2 *(2022-10-17)*
-  - Add publish helper script
+  - ✨ Add publish helper script
 - color-hash 1.2.1 *(2022-10-17)*
-  - Update docs
+  - 📝 Update docs
 - color-hash 1.2.0 *(2022-10-17)*
-  - Use typing supporting python3.6
+  - 🧑‍💻 Use typing supporting `python3.6`
 - color-hash 1.1.0 *(2022-09-01)*
-  - Add tests
-  - Add installation instructions
+  - ✅ Add tests
+  - 🚸 Add installation instructions
 - color-hash 1.0.4 *(2021-11-30)*
-  - Support only for python 3.6+
-  - Add tests
+  - Support only for `python3.6+`
+  - ✅ Add tests
 - color-hash 1.0.3 *(2020-12-04)*
-  - Drop support for python 2
-  - Handover of project maintenance
+  - ⚰️ Drop support for `python2.x`
+  - 🎉 Handover of project maintenance
 - color-hash 1.0.2 *(2016-07-08)*
-  - Add ``crc32_hash`` function and set default hashfunc to that. It's not
+  - ✨ Add ``crc32_hash`` function and set default hashfunc to that. It's not
     fully backwards-compatible, but I don't want to bump the version a lot for
     not doing my research.
 - color-hash 1.0.0 *(2016-07-07)*
-  - Initial port.
+  - 🎉 Initial port.
 
 ## License
 
