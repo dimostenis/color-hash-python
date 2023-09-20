@@ -1,16 +1,9 @@
-def get_version():
-    """
-    Fast (dev time) way to get version.
-    """
-    with open("pyproject.toml") as f:
-        for line in f.readlines():
-            if line.startswith("version = "):
-                ver = line.split("=")[1].strip().strip('"')
-                return ver
-
-
 def test_version_from_metadata():
+    """
+    This test makes sense only if importlib.metadata or importlib_metadata is avail.
+    Otherwise its a test of "colorhash.get_version" vs. "colorhash.get_version" :)
+    """
     import colorhash
 
-    version = get_version()
+    version = colorhash.get_version(__package__)
     assert colorhash.__version__ == version
