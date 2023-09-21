@@ -37,39 +37,32 @@ def crc32_hash(obj: Any) -> int:
     return crc32(bs) & 0xFFFFFFFF
 
 
-def hsl2rgb(hsl: Tuple[IntOrFloat, float, float]) -> Tuple[int, int, int]:
-    """
-    Convert an HSL color value into RGB.
+def hue_to_rgb(p, q, t):
+    if t < 0:
+        t += 1
+    elif t > 1:
+        t -= 1
 
-    >>> hsl2rgb((0, 1, 0.5))
-    (255, 0, 0)
-    """
-    try:
-        h, s, l = hsl  # noqa
-        h /= 360
-        q = l * (1 + s) if l < 0.5 else l + s - l * s
-        p = 2 * l - q
-    except TypeError:
-        raise ValueError(hsl)
+    if t < 1 / 6:
+        return p + (q - p) * 6 * t
+    if t < 1 / 2:
+        return q
+    if t < 2 / 3:
+        return p + (q - p) * (2 / 3 - t) * 6
+    return p
 
-    rgb: list[int] = []
-    for c in (h + 1 / 3, h, h - 1 / 3):
-        if c < 0:
-            c += 1
-        elif c > 1:
-            c -= 1
 
-        if c < 1 / 6:
-            c = p + (q - p) * 6 * c
-        elif c < 0.5:
-            c = q
-        elif c < 2 / 3:
-            c = p + (q - p) * 6 * (2 / 3 - c)
-        else:
-            c = p
-        rgb.append(round(c * 255))
+def hsl2rgb(hsl: Tuple[float, float, float]) -> Tuple[int, int, int]:
+    h, s, l = hsl  # noqa: E741
+    h /= 360
+    q = l * (1 + s) if l < 0.5 else l + s - l * s
+    p = 2 * l - q
 
-    return tuple(rgb)  # noqa
+    r = round(hue_to_rgb(p, q, h + 1 / 3) * 255)
+    g = round(hue_to_rgb(p, q, h) * 255)
+    b = round(hue_to_rgb(p, q, h - 1 / 3) * 255)
+
+    return r, g, b
 
 
 def rgb2hex(rgb: Tuple[int, int, int]) -> str:
@@ -92,7 +85,7 @@ def color_hash(
     saturation=(0.35, 0.5, 0.65),
     min_h=None,
     max_h=None,
-) -> Tuple[int, float, float]:
+) -> Tuple[float, float, float]:
     """
     Calculate the color for the given object.
 

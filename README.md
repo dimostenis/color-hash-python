@@ -34,6 +34,9 @@ pip install colorhash
 
 ## Changelog
 
+- color-hash **1.3.2** *(2023-09-21)*
+  - ⚡️ 30%+ speedup on `hsl2rgb()`
+  - ✅ Add tests for all named colors (1500+ tests)
 - color-hash **1.3.1** *(2023-09-21)*
   - 🐛 Handle missing `importlib-metadata` import
 - color-hash **1.3.0** *(2023-09-20)*
