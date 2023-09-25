@@ -1,27 +1,29 @@
 .PHONY: install-pip-tools reqs install-env env test tag build publish
 
+VERSION := $(shell python -c 'import colorhash;print(colorhash.__version__)')
+
 # dev option to create update whole venv
 env: install-pip-tools reqs install-env
 
 build:
 	hatch build
 
-# https://test.pypi.org/project/colorhash/
-publish-test: check
-	twine upload --config-file .pypirc --repository testpypi dist/*
-
-# https://pypi.org/project/colorhash/
-publish: check
-	twine upload --config-file .pypirc --repository pypi dist/*
-
 # get current version and set a tag
 tag:
-	git tag -f v$(shell python -c 'import colorhash;print(colorhash.__version__)')
+	git tag -f v$(VERSION)
 
 # push both commits and tags
 push:
 	git push
 	git push -f --tags
+
+# https://test.pypi.org/project/colorhash/
+publish-test: check
+	twine upload --config-file .pypirc --repository testpypi dist/*$(VERSION)*
+
+# https://pypi.org/project/colorhash/
+publish: check
+	twine upload --config-file .pypirc --repository pypi dist/**$(VERSION)*
 
 # ===================
 # --- SUB TARGETS ---
