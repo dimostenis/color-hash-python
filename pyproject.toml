@@ -3,7 +3,7 @@ requires-python = ">=3.6"
 name = "colorhash"
 description = "Generate color based on any object"
 license = { text = "MIT" }
-version = "1.3.2"
+version = "2.0.0"
 readme = "README.md"
 authors = [
   { name = "dimostenis", email = "dimosh3k@gmail.com" },
@@ -15,7 +15,7 @@ dependencies = []
 Homepage = "https://github.com/dimostenis/color-hash-python"
 "Bug Tracker" = "https://github.com/dimostenis/color-hash-python/issues"
 [project.optional-dependencies]
-dev = ["black", "pre-commit", "pytest"]
+dev = ["black", "pre-commit", "pytest", "pillow"]
 
 [tool.isort]
 profile = "black"
