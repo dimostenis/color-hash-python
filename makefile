@@ -1,4 +1,4 @@
-.PHONY: install-pip-tools reqs install-env env test tag build publish
+.PHONY: install-pip-tools reqs install-env env test tag build publish docs
 
 VERSION := $(shell python -c 'import colorhash;print(colorhash.__version__)')
 
@@ -24,6 +24,10 @@ publish-test: check
 # https://pypi.org/project/colorhash/
 publish: check
 	twine upload --config-file .pypirc --repository pypi dist/**$(VERSION)*
+
+# generates README markdown tables and color tiles
+docs:
+	python -m docs.gen
 
 # ===================
 # --- SUB TARGETS ---

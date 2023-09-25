@@ -16,10 +16,14 @@ Quick start:
 '#2dd24b'
 """
 from binascii import crc32
-from numbers import Number
 from typing import Any
+from typing import Optional
+from typing import Sequence
 from typing import Tuple
 from typing import Union
+
+MIN_HUE = 0
+MAX_HUE = 360
 
 IntOrFloat = Union[int, float]
 
@@ -80,19 +84,56 @@ def rgb2hex(rgb: Tuple[int, int, int]) -> str:
 
 def color_hash(
     obj: Any,
-    hashfunc=crc32_hash,
-    lightness=(0.35, 0.5, 0.65),
-    saturation=(0.35, 0.5, 0.65),
-    min_h=None,
-    max_h=None,
+    lightness: Sequence[float] = (0.35, 0.5, 0.65),
+    saturation: Sequence[float] = (0.35, 0.5, 0.65),
+    min_h: Optional[int] = None,
+    max_h: Optional[int] = None,
 ) -> Tuple[float, float, float]:
     """
     Calculate the color for the given object.
 
+    This function takes the same arguments as the ``ColorHash`` class.
+
+    Returns:
+        A ``(H, S, L)`` tuple.
+    """
+    # "all([x for x ...])" is actually faster than "all(x for x ...)"
+    if not all([0.0 <= x <= 1.0 for x in lightness]):
+        raise ValueError("lightness params must be in range (0.0, 1.0)")
+    if not all([0.0 <= x <= 1.0 for x in saturation]):
+        raise ValueError("saturation params must be in range (0.0, 1.0)")
+
+    if min_h is None and max_h is not None:
+        min_h = MIN_HUE
+    if min_h is not None and max_h is None:
+        max_h = MAX_HUE
+
+    hash_val = crc32_hash(obj)
+    h = hash_val % 359
+    if min_h is not None and max_h is not None:
+        if not (
+            MIN_HUE <= min_h <= MAX_HUE
+            and MIN_HUE <= max_h <= MAX_HUE
+            and min_h <= max_h
+        ):
+            raise ValueError(
+                "min_h and max_h must be in range [0, 360] with min_h <= max_h"
+            )
+        h = (h / 1000) * (max_h - min_h) + min_h
+    hash_val //= 360
+    s = saturation[hash_val % len(saturation)]
+    hash_val //= len(saturation)
+    l = lightness[hash_val % len(lightness)]  # noqa
+
+    return (h, s, l)
+
+
+class ColorHash:
+    """
+    Generate a color value and provide it in several format.
+
     Args:
         obj: the value.
-        hashfunc: the hash function to use. Must be a unary function returning
-                  an integer. Defaults to ``crc32_hash``.
         lightness: a range of values, one of which will be picked for the
                    lightness component of the result. Can also be a single
                    number.
@@ -102,45 +143,27 @@ def color_hash(
         min_h: if set, limit the hue component to this lower value.
         max_h: if set, limit the hue component to this upper value.
 
-    Returns:
-        A ``(H, S, L)`` tuple.
-    """
-    if isinstance(lightness, Number):
-        lightness = [lightness]
-    if isinstance(saturation, Number):
-        saturation = [saturation]
-
-    if min_h is None and max_h is not None:
-        min_h = 0
-    if min_h is not None and max_h is None:
-        max_h = 360
-
-    hash = hashfunc(obj)
-    h = hash % 359
-    if min_h is not None and max_h is not None:
-        h = (h / 1000) * (max_h - min_h) + min_h
-    hash //= 360
-    s = saturation[hash % len(saturation)]
-    hash //= len(saturation)
-    l = lightness[hash % len(lightness)]  # noqa
-
-    return (h, s, l)
-
-
-class ColorHash:
-    """
-    Generate a color value and provide it in several format.
-
-    This class takes the same arguments as the ``color_hash`` function.
-
     Attributes:
         hsl: HSL representation of the color value.
         rgb: RGB representation of the color value.
         hex: hex-formatted RGB color value.
     """
 
-    def __init__(self, *args, **kwargs):
-        self.hsl: Tuple[int, float, float] = color_hash(*args, **kwargs)
+    def __init__(
+        self,
+        obj: Any,
+        lightness: Sequence[float] = (0.35, 0.5, 0.65),
+        saturation: Sequence[float] = (0.35, 0.5, 0.65),
+        min_h: Optional[int] = None,
+        max_h: Optional[int] = None,
+    ):
+        self.hsl: Tuple[float, float, float] = color_hash(
+            obj=obj,
+            lightness=lightness,
+            saturation=saturation,
+            min_h=min_h,
+            max_h=max_h,
+        )
 
     @property
     def rgb(self) -> Tuple[int, int, int]:
