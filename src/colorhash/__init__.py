@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from .colorhash import ColorHash
 
 
@@ -5,11 +7,11 @@ def get_version(_):
     """
     Fast (dev time) way to get version.
     """
-    with open("pyproject.toml") as f:
-        for line in f.readlines():
+    with Path("pyproject.toml").open(encoding="utf-8") as f:
+        for line in f:
             if line.startswith("version = "):
-                ver = line.split("=")[1].strip().strip('"')
-                return ver
+                return line.split("=")[1].strip().strip('"')
+    return None
 
 
 try:

@@ -1,9 +1,9 @@
 [project]
-requires-python = ">=3.6"
+requires-python = ">=3.7"
 name = "colorhash"
 description = "Generate color based on any object"
 license = { text = "MIT" }
-version = "2.0.0"
+version = "2.1.0"
 readme = "README.md"
 authors = [
   { name = "dimostenis", email = "dimosh3k@gmail.com" },
@@ -14,34 +14,124 @@ dependencies = []
 [project.urls]
 Homepage = "https://github.com/dimostenis/color-hash-python"
 "Bug Tracker" = "https://github.com/dimostenis/color-hash-python/issues"
-[project.optional-dependencies]
-dev = ["black", "pre-commit", "pytest", "pillow"]
+[dependency-groups]
+dev = ["pytest", "pillow"]
 
-[tool.isort]
-profile = "black"
-multi_line_output = 7
-force_single_line = true
+[tool.ruff]
+line-length = 88        # as black
+indent-width = 4
+target-version = "py37"
 
-[tool.black]
-line-length = 88
+[tool.ruff.format]
+docstring-code-format = true
 
-[tool.mypy]
-enable_error_code = ["truthy-bool"]
+# https://docs.astral.sh/ruff/rules/
+[tool.ruff.lint]
+preview = true
+select = [
+  # "AIR",   # Airflow (AIR)
+  # "ERA",   # eradicate (ERA)
+  "FAST", # FastAPI (FAST)
+  "YTT",  # flake8-2020 (YTT)
+  # "ANN",   # flake8-annotations (ANN)
+  "ASYNC", # flake8-async (ASYNC)
+  # "S",     # flake8-bandit (S)
+  "BLE", # flake8-blind-except (BLE)
+  "FBT", # flake8-boolean-trap (FBT)
+  "B",   # flake8-bugbear (B)
+  "A",   # flake8-builtins (A)
+  "COM", # flake8-commas (COM)
+  "C4",  # flake8-comprehensions (C4)
+  # "CPY",   # flake8-copyright (CPY)
+  "DTZ", # flake8-datetimez (DTZ)
+  # "T10",   # flake8-debugger (T10)
+  # "DJ",    # flake8-django (DJ)
+  "EM", # flake8-errmsg (EM)
+  # "EXE",   # flake8-executable (EXE)
+  # "FIX",   # flake8-fixme (FIX)
+  "FA",  # flake8-future-annotations (FA)
+  "INT", # flake8-gettext (INT)
+  "ISC", # flake8-implicit-str-concat (ISC)
+  "ICN", # flake8-import-conventions (ICN)
+  "LOG", # flake8-logging (LOG)
+  "G",   # flake8-logging-format (G)
+  "INP", # flake8-no-pep420 (INP)
+  "PIE", # flake8-pie (PIE)
+  # "T20",   # flake8-print (T20)
+  "PYI",  # flake8-pyi (PYI)
+  "PT",   # flake8-pytest-style (PT)
+  "Q",    # flake8-quotes (Q)
+  "RSE",  # flake8-raise (RSE)
+  "RET",  # flake8-return (RET)
+  "SLF",  # flake8-self (SLF)
+  "SIM",  # flake8-simplify (SIM)
+  "SLOT", # flake8-slots (SLOT)
+  "TID",  # flake8-tidy-imports (TID)
+  # "TD",    # flake8-todos (TD)
+  "TC",   # flake8-type-checking (TC)
+  "ARG",  # flake8-unused-arguments (ARG)
+  "PTH",  # flake8-use-pathlib (PTH)
+  "FLY",  # flynt (FLY)
+  "I",    # isort (I)
+  "C90",  # mccabe (C90)
+  "NPY",  # NumPy-specific rules (NPY)
+  "PD",   # pandas-vet (PD)
+  "N",    # pep8-naming (N)
+  "PERF", # Perflint (PERF)
+  "E",    # pycodestyle (E, W) Error (E)
+  "W",    # pycodestyle (E, W) Warning (W)
+  # "DOC",  # pydoclint (DOC)
+  # "D",    # pydocstyle (D)
+  "F", # Pyflakes (F)
+  # "PGH",  # pygrep-hooks (PGH)
+  "PL",   # Pylint (PL)
+  "PLC",  # Convention (PLC)
+  "PLE",  # Error (PLE)
+  "PLR",  # Refactor (PLR)
+  "PLW",  # Warning (PLW)
+  "UP",   # pyupgrade (UP)
+  "FURB", # refurb (FURB)
+  "RUF",  # Ruff-specific rules (RUF)
+  "TRY",  # tryceratops (TRY)
+]
+ignore = [
+  "A001", # Function argument `hex` is shadowing a Python builtin
+  "A002", # Function argument `hex` is shadowing a Python builtin
+]
 
-[tool.refurb]
-# FURB145 Replace `x[:]` with `x.copy()`
-ignore = ["FURB145"]
+[tool.ruff.lint.isort]
+force-single-line = true
+
+[tool.uv-secure.vulnerability_criteria]
+ignore_vulnerabilities = []
+
+[tool.interrogate]
+ignore-module = true
+ignore-init-method = true
+ignore-init-module = true
+ignore-magic = true
+ignore-semiprivate = true
+ignore-private = true
+ignore-property-decorators = true
+fail-under = 60
+exclude = ["test"]
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build]
-exclude = ["/test", ".gitignore", ".pre-commit-config.yaml", "makefile"]
+exclude = [
+  ".*",
+  "/docs",
+  "/test",
+  "makefile",
+  "uv.lock",
+]
 
 [tool.hatch.envs.test]
 dependencies = ["pytest"]
 [tool.hatch.envs.test.scripts]
 test = "pytest"
 [[tool.hatch.envs.test.matrix]]
-python = ["3.7", "3.8", "3.9", "3.10", "3.11"]
+python = ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]

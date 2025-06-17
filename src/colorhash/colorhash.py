@@ -7,7 +7,7 @@ Generate a color based on an object's hash value.
 Quick start:
 
 >>> from colorhash import ColorHash
->>> c = ColorHash('Hello World')
+>>> c = ColorHash("Hello World")
 >>> c.hsl
 (131, 0.65, 0.5)
 >>> c.rgb
@@ -15,11 +15,12 @@ Quick start:
 >>> c.hex
 '#2dd24b'
 """
+
+from __future__ import annotations
+
 from binascii import crc32
 from typing import Any
-from typing import Optional
 from typing import Sequence
-from typing import Tuple
 from typing import Union
 
 MIN_HUE = 0
@@ -41,7 +42,23 @@ def crc32_hash(obj: Any) -> int:
     return crc32(bs) & 0xFFFFFFFF
 
 
-def hue_to_rgb(p, q, t):
+def hue_to_rgb(p: float, q: float, t: float):
+    """
+    Converts hue to RGB component for HSL to RGB color conversion.
+
+    Args:
+        p (float): First intermediate value, typically calculated from lightness and
+                   saturation.
+        q (float): Second intermediate value, typically calculated from lightness and
+                   saturation.
+        t (float): Adjusted hue value, should be in the range [0, 1].
+
+    Returns:
+        float: The RGB component corresponding to the given hue.
+
+    Notes:
+        This function is used internally in HSL to RGB conversion algorithms.
+    """
     if t < 0:
         t += 1
     elif t > 1:
@@ -56,10 +73,25 @@ def hue_to_rgb(p, q, t):
     return p
 
 
-def hsl2rgb(hsl: Tuple[float, float, float]) -> Tuple[int, int, int]:
+def hsl2rgb(hsl: tuple[float, float, float]) -> tuple[int, int, int]:
+    """
+    Converts an HSL color value to its corresponding RGB representation.
+
+    Args:
+        hsl (tuple[float, float, float]): A tuple containing the hue (0-360), saturation
+        (0-1), and lightness (0-1) values.
+
+    Returns:
+        tuple[int, int, int]: A tuple containing the red, green, and blue values (each
+        in the range 0-255).
+
+    Note:
+        The hue value should be in degrees (0-360), while saturation and lightness
+        should be in the range 0 to 1.
+    """
     h, s, l = hsl  # noqa: E741
-    h /= 360
-    q = l * (1 + s) if l < 0.5 else l + s - l * s
+    h /= MAX_HUE
+    q = l * (1 + s) if l < 0.5 else l + s - l * s  # noqa: PLR2004
     p = 2 * l - q
 
     r = round(hue_to_rgb(p, q, h + 1 / 3) * 255)
@@ -69,7 +101,7 @@ def hsl2rgb(hsl: Tuple[float, float, float]) -> Tuple[int, int, int]:
     return r, g, b
 
 
-def rgb2hex(rgb: Tuple[int, int, int]) -> str:
+def rgb2hex(rgb: tuple[int, int, int]) -> str:
     """
     Format an RGB color value into a hexadecimal color string.
 
@@ -77,18 +109,18 @@ def rgb2hex(rgb: Tuple[int, int, int]) -> str:
     '#ff0000'
     """
     try:
-        return "#%02x%02x%02x" % rgb
-    except TypeError:
-        raise ValueError(rgb)
+        return "#{:02x}{:02x}{:02x}".format(*rgb)
+    except TypeError as exc:
+        raise ValueError(rgb) from exc
 
 
 def color_hash(
     obj: Any,
     lightness: Sequence[float] = (0.35, 0.5, 0.65),
     saturation: Sequence[float] = (0.35, 0.5, 0.65),
-    min_h: Optional[int] = None,
-    max_h: Optional[int] = None,
-) -> Tuple[float, float, float]:
+    min_h: int | None = None,
+    max_h: int | None = None,
+) -> tuple[float, float, float]:
     """
     Calculate the color for the given object.
 
@@ -98,10 +130,12 @@ def color_hash(
         A ``(H, S, L)`` tuple.
     """
     # "all([x for x ...])" is actually faster than "all(x for x ...)"
-    if not all([0.0 <= x <= 1.0 for x in lightness]):
-        raise ValueError("lightness params must be in range (0.0, 1.0)")
-    if not all([0.0 <= x <= 1.0 for x in saturation]):
-        raise ValueError("saturation params must be in range (0.0, 1.0)")
+    if not all([0.0 <= x <= 1.0 for x in lightness]):  # noqa: C419
+        msg = "lightness params must be in range (0.0, 1.0)"
+        raise ValueError(msg)
+    if not all([0.0 <= x <= 1.0 for x in saturation]):  # noqa: C419
+        msg = "saturation params must be in range (0.0, 1.0)"
+        raise ValueError(msg)
 
     if min_h is None and max_h is not None:
         min_h = MIN_HUE
@@ -116,9 +150,8 @@ def color_hash(
             and MIN_HUE <= max_h <= MAX_HUE
             and min_h <= max_h
         ):
-            raise ValueError(
-                "min_h and max_h must be in range [0, 360] with min_h <= max_h"
-            )
+            msg: str = "min_h and max_h must be in range [0, 360] with min_h <= max_h"
+            raise ValueError(msg)
         h = (h / 1000) * (max_h - min_h) + min_h
     hash_val //= 360
     s = saturation[hash_val % len(saturation)]
@@ -154,10 +187,10 @@ class ColorHash:
         obj: Any,
         lightness: Sequence[float] = (0.35, 0.5, 0.65),
         saturation: Sequence[float] = (0.35, 0.5, 0.65),
-        min_h: Optional[int] = None,
-        max_h: Optional[int] = None,
+        min_h: int | None = None,
+        max_h: int | None = None,
     ):
-        self.hsl: Tuple[float, float, float] = color_hash(
+        self.hsl: tuple[float, float, float] = color_hash(
             obj=obj,
             lightness=lightness,
             saturation=saturation,
@@ -166,7 +199,7 @@ class ColorHash:
         )
 
     @property
-    def rgb(self) -> Tuple[int, int, int]:
+    def rgb(self) -> tuple[int, int, int]:
         return hsl2rgb(self.hsl)
 
     @property
