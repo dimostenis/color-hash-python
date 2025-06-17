@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v5.0.0
     hooks:
       - id: check-added-large-files
       - id: check-ast
@@ -20,28 +20,35 @@ repos:
       - id: end-of-file-fixer
 
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: "v0.0.290"
+    rev: v0.11.13
     hooks:
       - id: ruff
-        args: ["--fix"]
+        args: ["--fix", "--unsafe-fixes"]
+      - id: ruff-format
 
-  - repo: https://github.com/dosisod/refurb
-    rev: v1.21.0
+  - repo: https://github.com/owenlamont/uv-secure
+    rev: 0.9.2
     hooks:
-      - id: refurb
+      - id: uv-secure
 
-  - repo: https://github.com/asottile/pyupgrade
-    rev: "v3.11.1"
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.7.13
     hooks:
-      - id: pyupgrade
-        args: [--py36-plus]
+      - id: uv-lock
 
-  - repo: https://github.com/timothycrosley/isort
-    rev: 5.12.0
+  - repo: https://github.com/econchick/interrogate
+    rev: 1.7.0
     hooks:
-      - id: isort
+      - id: interrogate
+        args: [-vv, --config=pyproject.toml]
+        pass_filenames: false
 
-  - repo: https://github.com/psf/black
-    rev: 23.9.1
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
     hooks:
-      - id: black
+        - id: detect-secrets
+          args:
+              - --exclude-files
+              - helm/*
+              - --exclude-files
+              - README.md

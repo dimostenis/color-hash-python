@@ -1,6 +1,6 @@
 # color-hash
 
-**Generate a color based on a value**
+Generate deterministic color based on any object.
 
 This module generates a color based on an object, by calculating a color value
 based on a hash value for the object. This means the result is deterministic:
@@ -94,9 +94,12 @@ Finally some bad examples. When you set too strict rules, colors may be almost i
 | `ColorHash('same', min_h=150, max_h=150)` | `#79d2a6` | ![#79d2a6](./docs/79d2a6.png) |
 | `ColorHash('color', min_h=150, max_h=150)` | `#6ce0a6` | ![#6ce0a6](./docs/6ce0a6.png) |
 
-
 ## Changelog
 
+- color-hash **2.1.0** *(2025-06-17)*
+  - ✨ Support up to `python3.14`
+  - ✨ Use `uv`
+  - ⚰️ `python3.7` is still supported and *shall* work, but not tested any more
 - color-hash **2.0.0** *(2023-09-22)*
   - ✨ Expose params to influence colors
   - ✨ Runtime validation of input params
@@ -149,6 +152,8 @@ Running `pytest` (1600+ tests) on different python versions.
 | 3.9    | `0.720` |
 | 3.10   | `0.690` |
 | 3.11   | `0.892` |
+| 3.12   |    🤷🏻‍♂️   |
+| 3.13   |    🤷🏻‍♂️   |
 
 ## License
 

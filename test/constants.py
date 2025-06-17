@@ -1,8 +1,12 @@
-import math
+from __future__ import annotations
 
-OBJECTS = (
+import math
+from typing import Any
+from typing import Dict
+
+OBJECTS: tuple[Any, ...] = (
     ...,
-    "\u03A9",
+    "\u03a9",
     "\u2713",
     "A",
     "Hello, World!",
@@ -55,14 +59,17 @@ OBJECTS = (
     object(),
     r"C:\path\to\directory",
     r"C:\path\to\file",
-    range(0, 10),
+    range(10),
     range(10, 20),
     set(),
     True,
 )
 
+Name = str
+Vals = Dict[str, Any]
+
 # HSL values saturation & lightness are in %, so it has to be /100
-NAMED_COLORS = {
+NAMED_COLORS: dict[Name, Vals] = {
     "Air Force blue": {
         "hex": "#5d8aa8",
         "rgb": (93, 138, 168),
@@ -4541,7 +4548,9 @@ NAMED_COLORS = {
     },
 }
 
-lst = NAMED_COLORS.values()
-NAMED_COLORS_HEX = [x["hex"] for x in lst]
-NAMED_COLORS_RGB = [x["rgb"] for x in lst]
-NAMED_COLORS_HSL = [(x["hsl"][0], x["hsl"][1] / 100, x["hsl"][2] / 100) for x in lst]
+lst: list[Vals] = list(NAMED_COLORS.values())
+NAMED_COLORS_HEX: list[str] = [x["hex"] for x in lst]
+NAMED_COLORS_RGB: list[tuple[int, int, int]] = [x["rgb"] for x in lst]
+NAMED_COLORS_HSL: list[tuple[float, float, float]] = [
+    (x["hsl"][0], x["hsl"][1] / 100, x["hsl"][2] / 100) for x in lst
+]
