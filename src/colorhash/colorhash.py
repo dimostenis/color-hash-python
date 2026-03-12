@@ -24,8 +24,12 @@ from typing import Sequence
 from typing import Union
 
 MIN_HUE = 0
-MAX_HUE = 360
+MAX_HUE = 360  # full hue circle in degrees
 
+# Pre-computed fractions used in HSL → RGB conversion; avoids repeated float
+# division at every call to hue_to_rgb / hsl2rgb.
+_ONE_THIRD = 1 / 3
+_TWO_THIRDS = 2 / 3
 IntOrFloat = Union[int, float]
 
 
@@ -39,6 +43,7 @@ def crc32_hash(obj: Any) -> int:
     method.
     """
     bs = str(obj).encode("utf-8")
+    # Mask to unsigned 32-bit: crc32 returns a signed int on some platforms.
     return crc32(bs) & 0xFFFFFFFF
 
 
@@ -67,7 +72,7 @@ def hue_to_rgb(p: float, q: float, t: float) -> float:
     #   [1/6, 1/2)  →  plateau:   1         (both 6t ≥ 1 and 6(2/3-t) ≥ 1)
     #   [1/2, 2/3)  →  ramp down: 6(2/3-t)  (6t > 1, so min picks the ramp)
     #   [2/3, 1)    →  zero:      0         (6(2/3-t) ≤ 0, clamped to 0)
-    return p + (q - p) * max(0.0, min(1.0, 6 * t, 6 * (2 / 3 - t)))
+    return p + (q - p) * max(0.0, min(1.0, 6 * t, 6 * (_TWO_THIRDS - t)))
 
 
 def hsl2rgb(hsl: tuple[float, float, float]) -> tuple[int, int, int]:
@@ -87,13 +92,17 @@ def hsl2rgb(hsl: tuple[float, float, float]) -> tuple[int, int, int]:
         should be in the range 0 to 1.
     """
     h, s, l = hsl  # noqa: E741
+    # Normalise hue from [0, 360] to [0, 1] for the hue_to_rgb helper.
     h /= MAX_HUE
+    # Standard HSL intermediate values (W3C algorithm):
+    #   q is the "bright" boundary, p is the "dark" boundary.
     q = l * (1 + s) if l < 0.5 else l + s - l * s  # noqa: PLR2004
     p = 2 * l - q
 
-    r = round(hue_to_rgb(p, q, h + 1 / 3) * 255)
+    # Each channel is sampled at a different point on the hue circle (+120°, 0°, -120°).
+    r = round(hue_to_rgb(p, q, h + _ONE_THIRD) * 255)
     g = round(hue_to_rgb(p, q, h) * 255)
-    b = round(hue_to_rgb(p, q, h - 1 / 3) * 255)
+    b = round(hue_to_rgb(p, q, h - _ONE_THIRD) * 255)
 
     return r, g, b
 
@@ -106,7 +115,7 @@ def rgb2hex(rgb: tuple[int, int, int]) -> str:
     '#ff0000'
     """
     try:
-        return "#{:02x}{:02x}{:02x}".format(*rgb)
+        return f"#{rgb[0]:02x}{rgb[1]:02x}{rgb[2]:02x}"
     except TypeError as exc:
         raise ValueError(rgb) from exc
 
@@ -126,6 +135,7 @@ def color_hash(
     Returns:
         A ``(H, S, L)`` tuple.
     """
+    # Accept a bare number as a single-element sequence.
     if isinstance(lightness, (float, int)):
         lightness = [lightness]
     if isinstance(saturation, (float, int)):
@@ -138,12 +148,14 @@ def color_hash(
         msg = "saturation params must be in range (0.0, 1.0)"
         raise ValueError(msg)
 
+    # If only one bound is given, fill in the opposite extreme.
     if min_h is None and max_h is not None:
         min_h = MIN_HUE
     if min_h is not None and max_h is None:
         max_h = MAX_HUE
 
     hash_val = crc32_hash(obj)
+    # Map the hash to a hue in [0, 358] (% 359 keeps 0 and 359 equidistant).
     h = hash_val % 359
     if min_h is not None and max_h is not None:
         if not (
@@ -153,8 +165,12 @@ def color_hash(
         ):
             msg: str = "min_h and max_h must be in range [0, 360] with min_h <= max_h"
             raise ValueError(msg)
+        # NOTE: dividing by 1000 instead of 359 intentionally limits the reachable range
+        # — this is a known issue and will be fixed as a breaking change in 3.0.0.
         h = (h / 1000) * (max_h - min_h) + min_h
-    hash_val //= 360
+    # Consume further bits of the hash to pick saturation and lightness
+    # independently from the hue selection above.
+    hash_val //= MAX_HUE
     s = saturation[hash_val % len(saturation)]
     hash_val //= len(saturation)
     l = lightness[hash_val % len(lightness)]  # noqa
