@@ -10,10 +10,7 @@ __pycache__
 .vscode
 
 dist
-
-poetry.lock
+tmp
 
 .DS_Store
 .pypirc
-
-requirements-dev.txt

@@ -129,6 +129,11 @@ def color_hash(
     Returns:
         A ``(H, S, L)`` tuple.
     """
+    if isinstance(lightness, (float, int)):
+        lightness = [lightness]
+    if isinstance(saturation, (float, int)):
+        saturation = [saturation]
+
     # "all([x for x ...])" is actually faster than "all(x for x ...)"
     if not all([0.0 <= x <= 1.0 for x in lightness]):  # noqa: C419
         msg = "lightness params must be in range (0.0, 1.0)"
@@ -152,7 +157,7 @@ def color_hash(
         ):
             msg: str = "min_h and max_h must be in range [0, 360] with min_h <= max_h"
             raise ValueError(msg)
-        h = (h / 1000) * (max_h - min_h) + min_h
+        h = (h / 358) * (max_h - min_h) + min_h
     hash_val //= 360
     s = saturation[hash_val % len(saturation)]
     hash_val //= len(saturation)

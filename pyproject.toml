@@ -1,16 +1,18 @@
 [project]
-requires-python = ">=3.7"
+requires-python = ">=3.8,<3.16"
 name = "colorhash"
 description = "Generate color based on any object"
 license = { text = "MIT" }
-version = "2.1.0"
+version = "2.2.0"
 readme = "README.md"
 authors = [
   { name = "dimostenis", email = "dimosh3k@gmail.com" },
   { name = "Felix Krull", email = "f_krull@gmx.de" },
 ]
 keywords = ["color", "hash", "rgb", "hsl", "hex"]
-dependencies = []
+dependencies = [
+    "zipp>=3.19.1",
+]
 [project.urls]
 Homepage = "https://github.com/dimostenis/color-hash-python"
 "Bug Tracker" = "https://github.com/dimostenis/color-hash-python/issues"
@@ -97,13 +99,15 @@ select = [
 ignore = [
   "A001", # Function argument `hex` is shadowing a Python builtin
   "A002", # Function argument `hex` is shadowing a Python builtin
+  "RUF067", # False positive for version detection in __init__.py
 ]
 
 [tool.ruff.lint.isort]
 force-single-line = true
 
 [tool.uv-secure.vulnerability_criteria]
-ignore_vulnerabilities = []
+ignore_vulnerabilities = [
+]
 
 [tool.interrogate]
 ignore-module = true
@@ -134,4 +138,4 @@ dependencies = ["pytest"]
 [tool.hatch.envs.test.scripts]
 test = "pytest"
 [[tool.hatch.envs.test.matrix]]
-python = ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+python = ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14", "3.15"]
