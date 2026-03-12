@@ -10,14 +10,18 @@ authors = [
   { name = "Felix Krull", email = "f_krull@gmx.de" },
 ]
 keywords = ["color", "hash", "rgb", "hsl", "hex"]
-dependencies = [
-    "zipp>=3.19.1",
-]
+dependencies = []
 [project.urls]
 Homepage = "https://github.com/dimostenis/color-hash-python"
 "Bug Tracker" = "https://github.com/dimostenis/color-hash-python/issues"
 [dependency-groups]
-dev = ["pytest", "pillow"]
+dev = [
+  "pytest",
+  "pillow",
+  "hatch",
+  "twine",
+  "zipp>=3.19.1", # to fix vuln
+]
 
 [tool.ruff]
 line-length = 88        # as black
@@ -97,8 +101,8 @@ select = [
   "TRY",  # tryceratops (TRY)
 ]
 ignore = [
-  "A001", # Function argument `hex` is shadowing a Python builtin
-  "A002", # Function argument `hex` is shadowing a Python builtin
+  "A001",   # Function argument `hex` is shadowing a Python builtin
+  "A002",   # Function argument `hex` is shadowing a Python builtin
   "RUF067", # False positive for version detection in __init__.py
 ]
 
@@ -106,8 +110,7 @@ ignore = [
 force-single-line = true
 
 [tool.uv-secure.vulnerability_criteria]
-ignore_vulnerabilities = [
-]
+ignore_vulnerabilities = []
 
 [tool.interrogate]
 ignore-module = true
@@ -125,13 +128,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build]
-exclude = [
-  ".*",
-  "/docs",
-  "/test",
-  "makefile",
-  "uv.lock",
-]
+exclude = [".*", "/docs", "/test", "makefile", "uv.lock"]
 
 [tool.hatch.envs.test]
 dependencies = ["pytest"]
