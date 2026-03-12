@@ -33,10 +33,10 @@ build:
 
 # 3. Check pkg/whl if its OK
 .PHONY: check
-check:
+check: test build
 	twine check dist/*
 
-# 4. :: Commit changes
+# 4. :: Commit changes, checkout main
 
 # 5. :: Tag final (in this release) commit
 tag:

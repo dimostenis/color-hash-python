@@ -157,7 +157,7 @@ def color_hash(
         ):
             msg: str = "min_h and max_h must be in range [0, 360] with min_h <= max_h"
             raise ValueError(msg)
-        h = (h / 358) * (max_h - min_h) + min_h
+        h = (h / 1000) * (max_h - min_h) + min_h
     hash_val //= 360
     s = saturation[hash_val % len(saturation)]
     hash_val //= len(saturation)
