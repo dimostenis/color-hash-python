@@ -10,7 +10,7 @@ Key features:
 - **Deterministic**: Same input always results in the same color.
 - **Customizable**: Influence hue range, lightness, and saturation.
 - **Zero Dependencies**: Lightweight and easy to integrate.
-- **Compatibility**: Supports Python 3.7+ and is tested up to Python 3.15.
+- **Compatibility**: Supports Python 3.8+ and is tested up to Python 3.15.
 
 ## Quick Start
 
@@ -57,7 +57,7 @@ ColorHash(
 
 But be careful, **setting tight conditions may result in very similar colors**. See example tables.
 
-You can fix lightness or saturation to single value(s) by using sequence with 1 element (eg. `[0.5]`). Providing more values enables wider variety of options for ColorHash to choose from (determinastically).
+You can fix lightness or saturation to single value(s) by using sequence with 1 element (eg. `[0.5]`). Providing more values enables wider variety of options for ColorHash to choose from (deterministically).
 
 _Note: If you provide a single float instead of a sequence, it will be automatically wrapped in a list for convenience._
 
