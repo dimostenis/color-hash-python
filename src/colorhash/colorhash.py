@@ -42,7 +42,7 @@ def crc32_hash(obj: Any) -> int:
     return crc32(bs) & 0xFFFFFFFF
 
 
-def hue_to_rgb(p: float, q: float, t: float):
+def hue_to_rgb(p: float, q: float, t: float) -> float:
     """
     Converts hue to RGB component for HSL to RGB color conversion.
 
@@ -59,18 +59,15 @@ def hue_to_rgb(p: float, q: float, t: float):
     Notes:
         This function is used internally in HSL to RGB conversion algorithms.
     """
-    if t < 0:
-        t += 1
-    elif t > 1:
-        t -= 1
-
-    if t < 1 / 6:
-        return p + (q - p) * 6 * t
-    if t < 1 / 2:
-        return q
-    if t < 2 / 3:
-        return p + (q - p) * (2 / 3 - t) * 6
-    return p
+    # Wrap t into [0, 1) — equivalent to `if t < 0: t += 1 / elif t > 1: t -= 1`
+    # but correct for any value, not just values shifted by at most 1.
+    t %= 1.0
+    # Closed-form of the piecewise-linear HSL hue curve:
+    #   [0,   1/6)  →  ramp up:   6t        (min clamps at 0, max clamps at 1)
+    #   [1/6, 1/2)  →  plateau:   1         (both 6t ≥ 1 and 6(2/3-t) ≥ 1)
+    #   [1/2, 2/3)  →  ramp down: 6(2/3-t)  (6t > 1, so min picks the ramp)
+    #   [2/3, 1)    →  zero:      0         (6(2/3-t) ≤ 0, clamped to 0)
+    return p + (q - p) * max(0.0, min(1.0, 6 * t, 6 * (2 / 3 - t)))
 
 
 def hsl2rgb(hsl: tuple[float, float, float]) -> tuple[int, int, int]:
@@ -134,11 +131,10 @@ def color_hash(
     if isinstance(saturation, (float, int)):
         saturation = [saturation]
 
-    # "all([x for x ...])" is actually faster than "all(x for x ...)"
-    if not all([0.0 <= x <= 1.0 for x in lightness]):  # noqa: C419
+    if not all(0.0 <= x <= 1.0 for x in lightness):
         msg = "lightness params must be in range (0.0, 1.0)"
         raise ValueError(msg)
-    if not all([0.0 <= x <= 1.0 for x in saturation]):  # noqa: C419
+    if not all(0.0 <= x <= 1.0 for x in saturation):
         msg = "saturation params must be in range (0.0, 1.0)"
         raise ValueError(msg)
 
