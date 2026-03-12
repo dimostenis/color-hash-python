@@ -148,7 +148,7 @@ def color_hash(
         max_h = MAX_HUE
 
     hash_val = crc32_hash(obj)
-    h = hash_val % 359
+    h = hash_val % 1000
     if min_h is not None and max_h is not None:
         if not (
             MIN_HUE <= min_h <= MAX_HUE

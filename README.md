@@ -37,9 +37,9 @@ pip install colorhash
 
 | code                                  | hex       | color                           |
 |:--------------------------------------|:---------:|:-------------------------------:|
-| `ColorHash('hey')` | `#782d86` | ![#782d86](./docs/782d86.png) |
-| `ColorHash('oh')` | `#d29d79` | ![#d29d79](./docs/d29d79.png) |
-| `ColorHash('boi')` | `#6ce072` | ![#6ce072](./docs/6ce072.png) |
+| `ColorHash('hey')` | `#2d2d50` | ![#2d2d50](./docs/2d2d50.png) |
+| `ColorHash('oh')` | `#7979d2` | ![#7979d2](./docs/7979d2.png) |
+| `ColorHash('boi')` | `#e0aa6c` | ![#e0aa6c](./docs/e0aa6c.png) |
 
 ## Advanced usage
 
@@ -63,25 +63,25 @@ _Note: If you provide a single float instead of a sequence, it will be automatic
 
 | code                                  | hex       | color                           |
 |:--------------------------------------|:---------:|:-------------------------------:|
-| `ColorHash('hey', lightness=[0.55])` | `#b453c6` | ![#b453c6](./docs/b453c6.png) |
-| `ColorHash('hey', lightness=[0.75])` | `#d69fdf` | ![#d69fdf](./docs/d69fdf.png) |
-| `ColorHash('hey', lightness=[0.95])` | `#f7ecf9` | ![#f7ecf9](./docs/f7ecf9.png) |
-| `ColorHash('hey', saturation=[0.15])` | `#8d6c93` | ![#8d6c93](./docs/8d6c93.png) |
-| `ColorHash('hey', saturation=[0.55])` | `#b139c6` | ![#b139c6](./docs/b139c6.png) |
-| `ColorHash('hey', saturation=[0.95])` | `#d406f9` | ![#d406f9](./docs/d406f9.png) |
-| `ColorHash('hey', lightness=[0.95], saturation=[0.95])` | `#fbe6fe` | ![#fbe6fe](./docs/fbe6fe.png) |
-| `ColorHash('oh', lightness=[0.95], saturation=[0.95])` | `#fef0e6` | ![#fef0e6](./docs/fef0e6.png) |
-| `ColorHash('boi', lightness=[0.95], saturation=[0.95])` | `#e6fee7` | ![#e6fee7](./docs/e6fee7.png) |
+| `ColorHash('hey', lightness=[0.55])` | `#535381` | ![#535381](./docs/535381.png) |
+| `ColorHash('hey', lightness=[0.75])` | `#9f9fb9` | ![#9f9fb9](./docs/9f9fb9.png) |
+| `ColorHash('hey', lightness=[0.95])` | `#ececf1` | ![#ececf1](./docs/ececf1.png) |
+| `ColorHash('hey', saturation=[0.15])` | `#6c6c7c` | ![#6c6c7c](./docs/6c6c7c.png) |
+| `ColorHash('hey', saturation=[0.55])` | `#393971` | ![#393971](./docs/393971.png) |
+| `ColorHash('hey', saturation=[0.95])` | `#060667` | ![#060667](./docs/060667.png) |
+| `ColorHash('hey', lightness=[0.95], saturation=[0.95])` | `#e6e6f0` | ![#e6e6f0](./docs/e6e6f0.png) |
+| `ColorHash('oh', lightness=[0.95], saturation=[0.95])` | `#e6e6fe` | ![#e6e6fe](./docs/e6e6fe.png) |
+| `ColorHash('boi', lightness=[0.95], saturation=[0.95])` | `#fef3e6` | ![#fef3e6](./docs/fef3e6.png) |
 
 You can set hue range or even fix it by setting `min_h` = `max_h`.
 If you set only `min_h` or `max_h`, the other will be defaulted to 0 or 360 respectively.
 
 | code                                  | hex       | color                           |
 |:--------------------------------------|:---------:|:-------------------------------:|
-| `ColorHash('hey', min_h=150)` | `#862d67` | ![#862d67](./docs/862d67.png) |
-| `ColorHash('hey', min_h=300)` | `#862d3d` | ![#862d3d](./docs/862d3d.png) |
-| `ColorHash('hey', max_h=150)` | `#2d862f` | ![#2d862f](./docs/2d862f.png) |
-| `ColorHash('hey', min_h=150, max_h=360)` | `#862d67` | ![#862d67](./docs/862d67.png) |
+| `ColorHash('hey', min_h=150)` | `#2d6b86` | ![#2d6b86](./docs/2d6b86.png) |
+| `ColorHash('hey', min_h=300)` | `#86812d` | ![#86812d](./docs/86812d.png) |
+| `ColorHash('hey', max_h=150)` | `#792d86` | ![#792d86](./docs/792d86.png) |
+| `ColorHash('hey', min_h=150, max_h=360)` | `#2d6b86` | ![#2d6b86](./docs/2d6b86.png) |
 | `ColorHash('hey', min_h=150, max_h=150)  # fixed hue` | `#2d8659` | ![#2d8659](./docs/2d8659.png) |
 
 Or you can let `ColorHash` decide between combination of many `lightness` and `saturation` options (mind `min_h` and `max_h` are equal in this example).
@@ -96,9 +96,9 @@ Finally some bad examples. When you set too strict rules, colors may be almost i
 
 | code                                  | hex       | color                           |
 |:--------------------------------------|:---------:|:-------------------------------:|
-| `ColorHash('lets', lightness=[0.95], saturation=[0.95], min_h=300)` | `#fee6ed` | ![#fee6ed](./docs/fee6ed.png) |
-| `ColorHash('break', lightness=[0.95], saturation=[0.95], min_h=300)` | `#fee6f6` | ![#fee6f6](./docs/fee6f6.png) |
-| `ColorHash('it', lightness=[0.95], saturation=[0.95], min_h=300)` | `#fee6f3` | ![#fee6f3](./docs/fee6f3.png) |
+| `ColorHash('lets', lightness=[0.95], saturation=[0.95], min_h=300)` | `#fef8e6` | ![#fef8e6](./docs/fef8e6.png) |
+| `ColorHash('break', lightness=[0.95], saturation=[0.95], min_h=300)` | `#fcfee6` | ![#fcfee6](./docs/fcfee6.png) |
+| `ColorHash('it', lightness=[0.95], saturation=[0.95], min_h=300)` | `#fef8e6` | ![#fef8e6](./docs/fef8e6.png) |
 | `ColorHash('here', min_h=150, max_h=150)` | `#6ce0a6` | ![#6ce0a6](./docs/6ce0a6.png) |
 | `ColorHash('goes', min_h=150, max_h=150)` | `#79d2a6` | ![#79d2a6](./docs/79d2a6.png) |
 | `ColorHash('color', min_h=150, max_h=150)` | `#6ce0a6` | ![#6ce0a6](./docs/6ce0a6.png) |

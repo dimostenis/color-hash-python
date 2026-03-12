@@ -38,8 +38,6 @@ lst = [
     "ColorHash('it', lightness=[0.95], saturation=[0.95], min_h=300)",
     "ColorHash('here', min_h=150, max_h=150)",
     "ColorHash('goes', min_h=150, max_h=150)",
-    "ColorHash('almost', min_h=150, max_h=150)",
-    "ColorHash('same', min_h=150, max_h=150)",
     "ColorHash('color', min_h=150, max_h=150)",
 ]
 
