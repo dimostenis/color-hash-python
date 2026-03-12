@@ -128,6 +128,11 @@ ignore-property-decorators = true
 fail-under = 60
 exclude = ["test"]
 
+[tool.mypy]
+python_version = "3.9"
+strict = true
+warn_unused_ignores = true
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"

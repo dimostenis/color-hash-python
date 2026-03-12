@@ -20,17 +20,20 @@ from __future__ import annotations
 
 from binascii import crc32
 from typing import Any
+from typing import Final
 from typing import Sequence
 from typing import Union
 
-MIN_HUE = 0
-MAX_HUE = 360  # full hue circle in degrees
+MIN_HUE: Final = 0
+MAX_HUE: Final = 360  # full hue circle in degrees
 
 # Pre-computed fractions used in HSL → RGB conversion; avoids repeated float
 # division at every call to hue_to_rgb / hsl2rgb.
 _ONE_THIRD = 1 / 3
 _TWO_THIRDS = 2 / 3
 IntOrFloat = Union[int, float]
+# Type for params that accept either a single value or a sequence of values.
+ScalarOrSequence = Union[Sequence[IntOrFloat], IntOrFloat]
 
 
 def crc32_hash(obj: Any) -> int:
@@ -122,8 +125,8 @@ def rgb2hex(rgb: tuple[int, int, int]) -> str:
 
 def color_hash(
     obj: Any,
-    lightness: Sequence[float] = (0.35, 0.5, 0.65),
-    saturation: Sequence[float] = (0.35, 0.5, 0.65),
+    lightness: ScalarOrSequence = (0.35, 0.5, 0.65),
+    saturation: ScalarOrSequence = (0.35, 0.5, 0.65),
     min_h: int | None = None,
     max_h: int | None = None,
 ) -> tuple[float, float, float]:
@@ -156,15 +159,15 @@ def color_hash(
 
     hash_val = crc32_hash(obj)
     # Map the hash to a hue in [0, 358] (% 359 keeps 0 and 359 equidistant).
-    h = hash_val % 359
+    h: float = hash_val % 359
     if min_h is not None and max_h is not None:
         if not (
             MIN_HUE <= min_h <= MAX_HUE
             and MIN_HUE <= max_h <= MAX_HUE
             and min_h <= max_h
         ):
-            msg: str = "min_h and max_h must be in range [0, 360] with min_h <= max_h"
-            raise ValueError(msg)
+            range_msg = "min_h and max_h must be in range [0, 360] with min_h <= max_h"
+            raise ValueError(range_msg)
         # NOTE: dividing by 1000 instead of 359 intentionally limits the reachable range
         # — this is a known issue and will be fixed as a breaking change in 3.0.0.
         h = (h / 1000) * (max_h - min_h) + min_h
@@ -202,8 +205,8 @@ class ColorHash:
     def __init__(
         self,
         obj: Any,
-        lightness: Sequence[float] = (0.35, 0.5, 0.65),
-        saturation: Sequence[float] = (0.35, 0.5, 0.65),
+        lightness: ScalarOrSequence = (0.35, 0.5, 0.65),
+        saturation: ScalarOrSequence = (0.35, 0.5, 0.65),
         min_h: int | None = None,
         max_h: int | None = None,
     ):
