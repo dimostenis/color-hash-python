@@ -9,7 +9,10 @@ NEW_TABLE_SEPARATOR = object()  # sentinel
 
 lst = [
     NEW_TABLE_SEPARATOR,
-    "ColorHash('hey')  # default",
+    "ColorHash('hey')",
+    "ColorHash('oh')",
+    "ColorHash('boi')",
+    NEW_TABLE_SEPARATOR,
     "ColorHash('hey', lightness=[0.55])",
     "ColorHash('hey', lightness=[0.75])",
     "ColorHash('hey', lightness=[0.95])",

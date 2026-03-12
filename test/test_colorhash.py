@@ -1,12 +1,10 @@
 from __future__ import annotations
 
-import importlib.metadata
 from typing import Any
 
 import pytest
 
 from colorhash import ColorHash
-from colorhash import get_version
 from colorhash.colorhash import MAX_HUE
 from colorhash.colorhash import MIN_HUE
 from colorhash.colorhash import hsl2rgb
@@ -148,7 +146,3 @@ def test_hsl2rgb(hsl: tuple[float, float, float], rgb: tuple[int, int, int]):
 )
 def test_rgb2hex(rgb: tuple[int, int, int], hex: str):
     assert rgb2hex(rgb=rgb) == hex
-
-
-def test_get_version():
-    assert get_version(None) == importlib.metadata.version("colorhash")

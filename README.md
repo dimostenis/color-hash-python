@@ -1,15 +1,16 @@
 # color-hash
 
-Generate deterministic color based on any object.
+ColorHash is a lightweight Python library for generating deterministic colors from any object.
 
-This module generates a color based on an object, by calculating a color value
-based on a hash value for the object. This means the result is deterministic:
-the same value will always result in the same color (so long as the hash
-function remains deterministic).
+By calculating a color value based on an object's hash, it ensures consistent results: the same input will always yield the same color. This is particularly useful for UI elements like user avatars or category labels where visual consistency is required.
 
-This module is a port of the [color-hash Javascript library](https://github.com/zenozeng/color-hash).
+This module is a port of the original [color-hash Javascript library](https://github.com/zenozeng/color-hash).
 
-It supports Python 3.7+ and it has no dependencies.
+Key features:
+- **Deterministic**: Same input always results in the same color.
+- **Customizable**: Influence hue range, lightness, and saturation.
+- **Zero Dependencies**: Lightweight and easy to integrate.
+- **Compatibility**: Supports Python 3.7+ and is tested up to Python 3.15.
 
 ## Quick Start
 
@@ -32,6 +33,14 @@ Its hosted on PyPI.
 pip install colorhash
 ```
 
+## Basic (intended) use
+
+| code                                  | hex       | color                           |
+|:--------------------------------------|:---------:|:-------------------------------:|
+| `ColorHash('hey')` | `#782d86` | ![#782d86](./docs/782d86.png) |
+| `ColorHash('oh')` | `#d29d79` | ![#d29d79](./docs/d29d79.png) |
+| `ColorHash('boi')` | `#6ce072` | ![#6ce072](./docs/6ce072.png) |
+
 ## Advanced usage
 
 You can influence every aspect of final color. **Default values** are following:
@@ -39,20 +48,21 @@ You can influence every aspect of final color. **Default values** are following:
 ```python
 ColorHash(
     obj: Any,
-    lightness: Sequence[float, ...] = (0.35, 0.5, 0.65),  # picks 'randomly' one
-    saturation: Sequence[float, ...] = (0.35, 0.5, 0.65),  # picks 'randomly' one
-    min_h: Optional[int] = None,  # hue, min 0
-    max_h: Optional[int] = None,  # hue, max 360
+    lightness: Sequence[float] = (0.35, 0.5, 0.65),  # picks deterministically one
+    saturation: Sequence[float] = (0.35, 0.5, 0.65),  # picks deterministically one
+    min_h: Optional[int] = None,  # hue, min 0
+    max_h: Optional[int] = None,  # hue, max 360
 )
 ```
 
 But be careful, **setting tight conditions may result in very similar colors**. See example tables.
 
-You can fix lightness or saturation to single value(s) by using sequence with 1 element (eg. `[0.5]`).
+You can fix lightness or saturation to single value(s) by using sequence with 1 element (eg. `[0.5]`). Providing more values enables wider variety of options for ColorHash to choose from (determinastically).
+
+_Note: If you provide a single float instead of a sequence, it will be automatically wrapped in a list for convenience._
 
 | code                                  | hex       | color                           |
 |:--------------------------------------|:---------:|:-------------------------------:|
-| `ColorHash('hey')  # default` | `#782d86` | ![#782d86](./docs/782d86.png) |
 | `ColorHash('hey', lightness=[0.55])` | `#b453c6` | ![#b453c6](./docs/b453c6.png) |
 | `ColorHash('hey', lightness=[0.75])` | `#d69fdf` | ![#d69fdf](./docs/d69fdf.png) |
 | `ColorHash('hey', lightness=[0.95])` | `#f7ecf9` | ![#f7ecf9](./docs/f7ecf9.png) |
@@ -64,13 +74,14 @@ You can fix lightness or saturation to single value(s) by using sequence with 1 
 | `ColorHash('boi', lightness=[0.95], saturation=[0.95])` | `#e6fee7` | ![#e6fee7](./docs/e6fee7.png) |
 
 You can set hue range or even fix it by setting `min_h` = `max_h`.
+If you set only `min_h` or `max_h`, the other will be defaulted to 0 or 360 respectively.
 
 | code                                  | hex       | color                           |
 |:--------------------------------------|:---------:|:-------------------------------:|
-| `ColorHash('hey', min_h=150)` | `#2d5886` | ![#2d5886](./docs/2d5886.png) |
-| `ColorHash('hey', min_h=300)` | `#862d6c` | ![#862d6c](./docs/862d6c.png) |
-| `ColorHash('hey', max_h=150)` | `#866e2d` | ![#866e2d](./docs/866e2d.png) |
-| `ColorHash('hey', min_h=150, max_h=360)` | `#2d5886` | ![#2d5886](./docs/2d5886.png) |
+| `ColorHash('hey', min_h=150)` | `#862d67` | ![#862d67](./docs/862d67.png) |
+| `ColorHash('hey', min_h=300)` | `#862d3d` | ![#862d3d](./docs/862d3d.png) |
+| `ColorHash('hey', max_h=150)` | `#2d862f` | ![#2d862f](./docs/2d862f.png) |
+| `ColorHash('hey', min_h=150, max_h=360)` | `#862d67` | ![#862d67](./docs/862d67.png) |
 | `ColorHash('hey', min_h=150, max_h=150)  # fixed hue` | `#2d8659` | ![#2d8659](./docs/2d8659.png) |
 
 Or you can let `ColorHash` decide between combination of many `lightness` and `saturation` options (mind `min_h` and `max_h` are equal in this example).
@@ -85,17 +96,18 @@ Finally some bad examples. When you set too strict rules, colors may be almost i
 
 | code                                  | hex       | color                           |
 |:--------------------------------------|:---------:|:-------------------------------:|
-| `ColorHash('lets', lightness=[0.95], saturation=[0.95], min_h=300)` | `#fee6f8` | ![#fee6f8](./docs/fee6f8.png) |
-| `ColorHash('break', lightness=[0.95], saturation=[0.95], min_h=300)` | `#fee6fb` | ![#fee6fb](./docs/fee6fb.png) |
-| `ColorHash('it', lightness=[0.95], saturation=[0.95], min_h=300)` | `#fee6fa` | ![#fee6fa](./docs/fee6fa.png) |
+| `ColorHash('lets', lightness=[0.95], saturation=[0.95], min_h=300)` | `#fee6ed` | ![#fee6ed](./docs/fee6ed.png) |
+| `ColorHash('break', lightness=[0.95], saturation=[0.95], min_h=300)` | `#fee6f6` | ![#fee6f6](./docs/fee6f6.png) |
+| `ColorHash('it', lightness=[0.95], saturation=[0.95], min_h=300)` | `#fee6f3` | ![#fee6f3](./docs/fee6f3.png) |
 | `ColorHash('here', min_h=150, max_h=150)` | `#6ce0a6` | ![#6ce0a6](./docs/6ce0a6.png) |
 | `ColorHash('goes', min_h=150, max_h=150)` | `#79d2a6` | ![#79d2a6](./docs/79d2a6.png) |
-| `ColorHash('almost', min_h=150, max_h=150)` | `#6ce0a6` | ![#6ce0a6](./docs/6ce0a6.png) |
-| `ColorHash('same', min_h=150, max_h=150)` | `#79d2a6` | ![#79d2a6](./docs/79d2a6.png) |
 | `ColorHash('color', min_h=150, max_h=150)` | `#6ce0a6` | ![#6ce0a6](./docs/6ce0a6.png) |
 
 ## Changelog
 
+- color-hash **2.2.0** *(2026-03-12)*
+  - 🐛 Fixed hue calculation range mapping to correctly use the full spectrum when `min_h` and `max_h` are provided
+  - ✨ Support up to `python3.15` (tested on `3.15.0a6`)
 - color-hash **2.1.0** *(2025-06-17)*
   - ✨ Support up to `python3.14`
   - ✨ Use `uv`
@@ -140,20 +152,6 @@ Finally some bad examples. When you set too strict rules, colors may be almost i
     not doing my research.
 - color-hash **1.0.0** *(2016-07-07)*
   - 🎉 Initial port.
-
-## Speed comparison
-
-Running `pytest` (1600+ tests) on different python versions.
-
-| python | secs    |
-| :----: | :-----: |
-| 3.7    | `1.252` |
-| 3.8    | `1.239` |
-| 3.9    | `0.720` |
-| 3.10   | `0.690` |
-| 3.11   | `0.892` |
-| 3.12   |    🤷🏻‍♂️   |
-| 3.13   |    🤷🏻‍♂️   |
 
 ## License
 

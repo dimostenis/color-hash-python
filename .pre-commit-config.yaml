@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: check-added-large-files
       - id: check-ast
@@ -20,19 +20,19 @@ repos:
       - id: end-of-file-fixer
 
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.11.13
+    rev: v0.15.5
     hooks:
       - id: ruff
         args: ["--fix", "--unsafe-fixes"]
       - id: ruff-format
 
   - repo: https://github.com/owenlamont/uv-secure
-    rev: 0.9.2
+    rev: 0.17.0
     hooks:
       - id: uv-secure
 
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.7.13
+    rev: 0.10.9
     hooks:
       - id: uv-lock
 

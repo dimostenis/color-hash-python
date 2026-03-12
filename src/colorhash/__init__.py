@@ -1,30 +1,24 @@
-from pathlib import Path
-
 from .colorhash import ColorHash
 
-
-def get_version(_):
-    """
-    Fast (dev time) way to get version.
-    """
-    with Path("pyproject.toml").open(encoding="utf-8") as f:
-        for line in f:
-            if line.startswith("version = "):
-                return line.split("=")[1].strip().strip('"')
-    return None
-
-
 try:
-    # py3.8+
     from importlib.metadata import version
-
 except ImportError:
+    # Logic for Python < 3.8 (though no longer officially supported via pyproject.toml)
     try:
-        # py3.6 - py3.7
-        from importlib_metadata import version
+        from importlib_metadata import version  # type: ignore[import-not-found]
     except ImportError:
-        # some installations might be missing importlib_metadata
-        version = get_version
+        version = None
 
+
+def get_current_version() -> str:
+    """Get the current version of the package."""
+    if version:
+        try:
+            return version("colorhash")
+        except Exception:  # noqa: BLE001
+            pass
+    return "0.0.0"
+
+
+__version__ = get_current_version()
 __all__ = ["ColorHash"]
-__version__ = version(__package__)

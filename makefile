@@ -5,6 +5,7 @@ VERSION := $(shell python -c 'import colorhash;print(colorhash.__version__)')
 setup:
 	pre-commit autoupdate
 	pre-commit install
+	pre-commit run -a
 	rm uv.lock
 	uv lock
 	uv sync --all-extras
