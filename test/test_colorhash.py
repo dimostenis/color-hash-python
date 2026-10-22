@@ -6,7 +6,6 @@ import pytest
 
 from colorhash import ColorHash
 from colorhash.colorhash import MAX_HUE
-from colorhash.colorhash import MIN_HUE
 from colorhash.colorhash import hsl2rgb
 from colorhash.colorhash import rgb2hex
 from test.constants import NAMED_COLORS_HEX
@@ -29,10 +28,10 @@ MAX_LIGHTNESS = 1.0
         {"min_h": 360, "max_h": 360},
     ],
 )
-def test_hue_params(params: dict[str, int]):
+def test_hue_params(params: dict[str, int]) -> None:
     hsl = ColorHash(None, **params).hsl
-    min_h = params.get("min_h", MIN_HUE)
-    max_h = params.get("max_h", MAX_HUE)
+    min_h = params["min_h"]
+    max_h = params["max_h"]
     assert min_h <= hsl[0] <= max_h
 
 
@@ -53,9 +52,9 @@ def test_hue_params(params: dict[str, int]):
         {"lightness": [0.3, 0.6]},
     ],
 )
-def test_lightness_param(params: dict[str, tuple[float, ...]]):
+def test_lightness_param(params: dict[str, Any]) -> None:
     hsl = ColorHash(None, **params).hsl
-    assert hsl[2] in params.get("lightness")
+    assert hsl[2] in params["lightness"]
 
 
 @pytest.mark.parametrize(
@@ -75,9 +74,9 @@ def test_lightness_param(params: dict[str, tuple[float, ...]]):
         {"saturation": [0.3, 0.6]},
     ],
 )
-def test_saturation_param(params: dict[str, tuple[float, ...]]):
+def test_saturation_param(params: dict[str, Any]) -> None:
     hsl = ColorHash(None, **params).hsl
-    assert hsl[1] in params.get("saturation")
+    assert hsl[1] in params["saturation"]
 
 
 @pytest.mark.parametrize(
@@ -99,13 +98,13 @@ def test_saturation_param(params: dict[str, tuple[float, ...]]):
         ("params must be in range", {"saturation": [1.1]}),  # using list
     ],
 )
-def test_unsopported_params(err: str, params: dict[str, Any]):
+def test_unsopported_params(err: str, params: dict[str, Any]) -> None:
     with pytest.raises(ValueError, match=err):
         ColorHash(None, **params)
 
 
 @pytest.mark.parametrize("obj", OBJECTS)
-def test_colorhash_returns_some_color(obj):
+def test_colorhash_returns_some_color(obj: Any) -> None:
     min_rgb = 0
     max_rgb = 255
 
@@ -114,19 +113,19 @@ def test_colorhash_returns_some_color(obj):
 
     hsl = ColorHash(obj).hsl
     assert isinstance(hsl, tuple)
-    assert len(hsl) == 3  # noqa: PLR2004
+    assert len(hsl) == 3  # ruff: ignore[magic-value-comparison]
     assert hsl[0] <= MAX_HUE
     assert hsl[1] <= MAX_SATURATION
     assert hsl[2] <= MAX_LIGHTNESS
 
     rgb = ColorHash(obj).rgb
     assert isinstance(rgb, tuple)
-    assert len(rgb) == 3  # noqa: PLR2004
+    assert len(rgb) == 3  # ruff: ignore[magic-value-comparison]
     assert all(min_rgb < x <= max_rgb for x in rgb)
 
 
 @pytest.mark.parametrize("obj", OBJECTS)
-def test_is_deterministic(obj):
+def test_is_deterministic(obj: Any) -> None:
     assert ColorHash(obj).hex == ColorHash(obj).hex
     assert ColorHash(obj).hsl == ColorHash(obj).hsl
     assert ColorHash(obj).rgb == ColorHash(obj).rgb
@@ -136,7 +135,10 @@ def test_is_deterministic(obj):
     ("hsl", "rgb"),
     tuple(zip(NAMED_COLORS_HSL, NAMED_COLORS_RGB)),
 )
-def test_hsl2rgb(hsl: tuple[float, float, float], rgb: tuple[int, int, int]):
+def test_hsl2rgb(
+    hsl: tuple[float, float, float],
+    rgb: tuple[int, int, int],
+) -> None:
     assert hsl2rgb(hsl=hsl) == rgb
 
 
@@ -144,5 +146,5 @@ def test_hsl2rgb(hsl: tuple[float, float, float], rgb: tuple[int, int, int]):
     ("rgb", "hex"),
     tuple(zip(NAMED_COLORS_RGB, NAMED_COLORS_HEX)),
 )
-def test_rgb2hex(rgb: tuple[int, int, int], hex: str):
+def test_rgb2hex(rgb: tuple[int, int, int], hex: str) -> None:
     assert rgb2hex(rgb=rgb) == hex

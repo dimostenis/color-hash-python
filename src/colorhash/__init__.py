@@ -7,7 +7,7 @@ def get_current_version() -> str:
     """Get the current version of the package."""
     try:
         return version("colorhash")
-    except Exception:  # noqa: BLE001
+    except Exception:  # ruff: ignore[blind-except]
         return "0.0.0"
 
 
