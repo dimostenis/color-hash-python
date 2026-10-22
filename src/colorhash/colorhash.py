@@ -26,6 +26,8 @@ from typing import Union
 
 MIN_HUE: Final = 0
 MAX_HUE: Final = 360  # full hue circle in degrees
+HUE_BUCKET_COUNT: Final = 359
+MAX_HUE_BUCKET_INDEX: Final = HUE_BUCKET_COUNT - 1
 
 # Pre-computed fractions used in HSL → RGB conversion; avoids repeated float
 # division at every call to hue_to_rgb / hsl2rgb.
@@ -176,6 +178,12 @@ def color_hash(
 
     This function takes the same arguments as the ``ColorHash`` class.
 
+    Hue bounds are inclusive degrees in [0, 360]. If only one bound is given,
+    the missing bound defaults to 0 or 360. The hash selects one of 359 evenly
+    spaced values across that interval, including both endpoints. If neither
+    bound is given, the hash bucket (0 through 358) is used directly as degrees.
+    Hue 360 produces the same RGB color as hue 0.
+
     Returns:
         A ``(H, S, L)`` tuple.
     """
@@ -184,12 +192,11 @@ def color_hash(
 
     hash_val = crc32_hash(obj)
     min_h, max_h = _validate_hue_bounds(min_h, max_h)
-    # Map the hash to a hue in [0, 358] (% 359 keeps 0 and 359 equidistant).
-    h: float = hash_val % 359
+    # Map the hash to one of 359 hue buckets, indexed from 0 through 358.
+    h: float = hash_val % HUE_BUCKET_COUNT
     if min_h is not None and max_h is not None:
-        # NOTE: dividing by 1000 instead of 359 intentionally limits the reachable range
-        # — this is a known issue and will be fixed as a breaking change in 3.0.0.
-        h = (h / 1000) * (max_h - min_h) + min_h
+        # Scale across the inclusive bounds so both endpoints are reachable.
+        h = min_h + (h / MAX_HUE_BUCKET_INDEX) * (max_h - min_h)
     # Consume further bits of the hash to pick saturation and lightness
     # independently from the hue selection above.
     hash_val //= MAX_HUE
@@ -212,8 +219,16 @@ class ColorHash:
         saturation: a range of values, one of which will be picked for the
                     saturation component of the result. Can also be a single
                     number.
-        min_h: if set, limit the hue component to this lower value.
-        max_h: if set, limit the hue component to this upper value.
+        min_h: inclusive lower hue bound in degrees from 0 to 360. If set alone,
+               ``max_h`` defaults to 360.
+        max_h: inclusive upper hue bound in degrees from 0 to 360. If set alone,
+               ``min_h`` defaults to 0.
+
+    Hue mapping:
+        If either bound is provided, the hash selects one of 359 evenly spaced
+        hue values across the inclusive interval. If neither is provided, the
+        hash bucket (0 through 358) is used directly as degrees. Hue 360 maps to
+        the same RGB color as hue 0.
 
     Attributes:
         hsl: HSL representation of the color value.

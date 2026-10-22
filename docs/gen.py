@@ -29,7 +29,8 @@ lst: list[object] = [
     "ColorHash('hey', min_h=300)",
     "ColorHash('hey', max_h=150)",
     "ColorHash('hey', min_h=150, max_h=360)",
-    "ColorHash('hey', min_h=150, max_h=150)  # fixed hue",
+    "ColorHash('hey', min_h=120, max_h=120)  # fixed hue",
+    "ColorHash('hey mama', min_h=120, max_h=120)  # fixed hue",
     NEW_TABLE_SEPARATOR,
     "ColorHash('stick', min_h=65, max_h=65, saturation=[x/10 for x in range(1, 10)], lightness=[x/10 for x in range(1, 10)])",  # ruff: ignore[line-too-long]
     "ColorHash('with', min_h=65, max_h=65, saturation=[x/10 for x in range(1, 10)], lightness=[x/10 for x in range(1, 10)])",  # ruff: ignore[line-too-long]
