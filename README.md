@@ -117,7 +117,7 @@ Version **2.x.x** mapped a bounded hue range using only part of the requested in
 
 ## Changelog
 
-- color-hash **3.0.0** *(unreleased)*
+- color-hash **3.0.0** *(2026-10-22)*
   - 🐛 Fixed hue range mapping: when `min_h` and/or `max_h` is supplied, hashes now span the full inclusive interval.
   - 💥 BREAKING CHANGE: Colors may differ from version **2.x.x** when `min_h` or `max_h` is provided.
 - color-hash **2.3.0** *(2026-03-13)*
