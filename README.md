@@ -1,6 +1,6 @@
 # color-hash
 
-ColorHash is a lightweight Python library for generating deterministic colors from any object.
+ColorHash is a lightweight Python library for generating deterministic colors from objects' string representations.
 
 By calculating a color value based on an object's hash, it ensures consistent results: the same input will always yield the same color. This is particularly useful for UI elements like user avatars or category labels where visual consistency is required.
 
@@ -104,6 +104,16 @@ Finally some bad examples. When you set too strict rules, colors may be almost i
 | `ColorHash('here', min_h=150, max_h=150)` | `#6ce0a6` | ![#6ce0a6](./docs/6ce0a6.png) |
 | `ColorHash('goes', min_h=150, max_h=150)` | `#79d2a6` | ![#79d2a6](./docs/79d2a6.png) |
 | `ColorHash('color', min_h=150, max_h=150)` | `#6ce0a6` | ![#6ce0a6](./docs/6ce0a6.png) |
+
+### Hue mapping change in version 3.0.0
+
+Version **2.x.x** mapped a bounded hue range using only part of the requested interval (🐛). Version **3** fixes it and maps the hash across the full inclusive interval. Colors can change when the resulting interval has a nonzero width. Calls without hue bounds and calls with a fixed hue retain their previous colors.
+
+| Call | Version 2.x.x | Version 3.0.0 |
+|:--|:--:|:--:|
+| `ColorHash('hey', min_h=150)` | [![#2d5886](./docs/2d5886.png)](./docs/2d5886.png) `#2d5886` | [![#862d67](./docs/862d67.png)](./docs/862d67.png) `#862d67` |
+| `ColorHash('hey')` | [![#782d86](./docs/782d86.png)](./docs/782d86.png) `#782d86` | [![#782d86](./docs/782d86.png)](./docs/782d86.png) `#782d86` |
+| `ColorHash('hey', min_h=150, max_h=150)` | [![#2d8659](./docs/2d8659.png)](./docs/2d8659.png) `#2d8659` | [![#2d8659](./docs/2d8659.png)](./docs/2d8659.png) `#2d8659` |
 
 ## Changelog
 

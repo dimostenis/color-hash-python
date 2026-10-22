@@ -43,9 +43,10 @@ def crc32_hash(obj: Any) -> int:
     Generate a hash for ``obj``.
 
     This function first converts the object to a string and encodes it into
-    UTF-8, then calculates and returns the CRC-32 checksum of the result. The
-    hash is guaranteed to be as stable as the result of the object's ``__str__``
-    method.
+    UTF-8, then calculates and returns the CRC-32 checksum of the result. Equal
+    string representations produce equal hashes. An object's default string
+    representation may include a memory address, so different instances of the
+    same type may produce different hashes.
     """
     bs = str(obj).encode("utf-8")
     # Mask to unsigned 32-bit: crc32 returns a signed int on some platforms.
