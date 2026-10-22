@@ -9,8 +9,8 @@ This module is a port of the original [color-hash Javascript library](https://gi
 Key features:
 - **Deterministic**: Same input always results in the same color.
 - **Customizable**: Influence hue range, lightness, and saturation.
-- **Zero Dependencies**: Lightweight and easy to integrate.
-- **Compatibility**: Supports Python 3.8+ and is tested up to Python 3.15.
+- **No runtime dependencies**: Lightweight and easy to integrate.
+- **Compatibility**: Supports Python 3.8–3.15.
 
 ## Quick Start
 
@@ -27,7 +27,7 @@ Key features:
 
 ## Installation
 
-Its hosted on PyPI.
+It is available on PyPI.
 
 ```bash
 pip install colorhash
@@ -48,8 +48,8 @@ You can influence every aspect of final color. **Default values** are following:
 ```python
 ColorHash(
     obj: Any,
-    lightness: Sequence[float] = (0.35, 0.5, 0.65),  # picks deterministically one
-    saturation: Sequence[float] = (0.35, 0.5, 0.65),  # picks deterministically one
+    lightness: Union[int, float, Sequence[Union[int, float]]] = (0.35, 0.5, 0.65),  # picks deterministically one
+    saturation: Union[int, float, Sequence[Union[int, float]]] = (0.35, 0.5, 0.65),  # picks deterministically one
     min_h: Optional[int] = None,  # hue, min 0
     max_h: Optional[int] = None,  # hue, max 360
 )
@@ -59,7 +59,7 @@ But be careful, **setting tight conditions may result in very similar colors**. 
 
 You can fix lightness or saturation to single value(s) by using sequence with 1 element (eg. `[0.5]`). Providing more values enables wider variety of options for ColorHash to choose from (deterministically).
 
-_Note: If you provide a single float instead of a sequence, it will be automatically wrapped in a list for convenience._
+_Note: If you provide a single integer or float instead of a sequence, it will be automatically wrapped in a list for convenience._
 
 | code                                  | hex       | color                           |
 |:--------------------------------------|:---------:|:-------------------------------:|
@@ -74,8 +74,8 @@ _Note: If you provide a single float instead of a sequence, it will be automatic
 | `ColorHash('boi', lightness=[0.95], saturation=[0.95])` | `#e6fee7` | ![#e6fee7](./docs/e6fee7.png) |
 
 You can set hue range or even fix it by setting `min_h` = `max_h`.
-If you set only `min_h` or `max_h`, the other will be defaulted to 0 or 360 respectively.
-When either bound is set, the hash selects one of 359 evenly spaced hue values across the inclusive range. Hue is measured in degrees; 360° and 0° represent the same color in RGB. For the full `0–360°` interval, both endpoints therefore map to the same RGB hue.
+If only `min_h` is set, `max_h` defaults to 360; if only `max_h` is set, `min_h` defaults to 0.
+When either bound is set, the hash selects one of 359 evenly spaced hue values across the inclusive range. Hue is measured in degrees. Hue values of 0° and 360° represent the same point on the hue circle and produce identical RGB values.
 
 | code                                  | hex       | color                           |
 |:--------------------------------------|:---------:|:-------------------------------:|
