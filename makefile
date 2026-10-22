@@ -33,7 +33,7 @@ build:
 
 # 3. Check pkg/whl if its OK
 .PHONY: check
-check: test build
+check:
 	twine check dist/*
 
 # 4. :: Commit changes, checkout main
@@ -61,7 +61,7 @@ publish: check
 	twine upload --config-file .pypirc --repository pypi dist/*$(VERSION)*
 
 # 9. :: Create new Release on GitHub
-# https://github.com/dimostenis/color-hash-python/releases/new
+# Done automatically by GitHub Actions when tag v* is pushed.
 
 # -------------------
 

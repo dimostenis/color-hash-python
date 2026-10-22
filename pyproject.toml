@@ -3,7 +3,7 @@ requires-python = ">=3.8,<3.16"
 name = "colorhash"
 description = "Generate color based on any object"
 license = { text = "MIT" }
-version = "2.3.0"
+version = "3.0.0"
 readme = "README.md"
 authors = [
   { name = "dimostenis", email = "dimosh3k@gmail.com" },
@@ -11,6 +11,19 @@ authors = [
 ]
 keywords = ["color", "hash", "rgb", "hsl", "hex"]
 dependencies = []
+classifiers = [
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.15",
+]
 [project.urls]
 Homepage = "https://github.com/dimostenis/color-hash-python"
 "Bug Tracker" = "https://github.com/dimostenis/color-hash-python/issues"
@@ -101,14 +114,14 @@ select = [
   "TRY",  # tryceratops (TRY)
 ]
 ignore = [
-  "A001",   # Function argument `hex` is shadowing a Python builtin
-  "A002",   # Function argument `hex` is shadowing a Python builtin
-  "RUF067", # False positive for version detection in __init__.py
+  "builtin-variable-shadowing", # Function argument `hex` is shadowing a Python builtin
+  "builtin-argument-shadowing", # Function argument `hex` is shadowing a Python builtin
+  "non-empty-init-module",      # False positive for version detection in __init__.py
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "test/**" = [
-  "PLR6301", # Test methods in classes don't need to use self
+  "no-self-use", # Test methods in classes don't need to use self
 ]
 
 [tool.ruff.lint.isort]

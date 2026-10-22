@@ -105,47 +105,52 @@ Finally some bad examples. When you set too strict rules, colors may be almost i
 
 ## Changelog
 
-- color-hash **2.2.0** *(2026-03-12)*
-  - 🐛 Fixed hue calculation range mapping to correctly use the full spectrum when `min_h` and `max_h` are provided
-  - ✨ Support up to `python3.15` (tested on `3.15.0a6`)
+- color-hash **2.3.0** *(2026-03-13)*
+  - ⚡️ Refactor for better performance
+- color-hash **2.2.1** *(2026-03-12)*
+  - ⏪ Reverts a hue calculation change in `2.2.0`, which is how it should be, but produces different colors then up until now
+- color-hash **2.2.0** *(2026-03-12)* (**YANKED**)
+  - 🐛 Fixed hue calculation range mapping to correctly use the full spectrum when `min_h` and `max_h` are provided.
+  - ✨ Support up to `python3.15` (tested on `3.15.0a6`).
+  - ⚰️ `python3.7` does not work any more for sure.
 - color-hash **2.1.0** *(2025-06-17)*
-  - ✨ Support up to `python3.14`
-  - ✨ Use `uv`
-  - ⚰️ `python3.7` is still supported and *shall* work, but not tested any more
+  - ✨ Support up to `python3.14`.
+  - ✨ Use `uv`.
+  - ⚰️ `python3.7` is still supported and *might* work, but not tested any more.
 - color-hash **2.0.0** *(2023-09-22)*
-  - ✨ Expose params to influence colors
-  - ✨ Runtime validation of input params
-  - 📝 Update docs for advanced usage
+  - ✨ Expose params to influence colors.
+  - ✨ Runtime validation of input params.
+  - 📝 Update docs for advanced usage.
 - color-hash **1.3.2** *(2023-09-21)*
-  - ⚡️ 30%+ speedup on `hsl2rgb()`
-  - ✅ Add tests for all named colors (1500+ tests)
+  - ⚡️ 30%+ speedup on `hsl2rgb()`.
+  - ✅ Add tests for all named colors (1500+ tests).
 - color-hash **1.3.1** *(2023-09-21)*
-  - 🐛 Handle missing `importlib-metadata` import
+  - 🐛 Handle missing `importlib-metadata` import.
 - color-hash **1.3.0** *(2023-09-20)*
-  - 🧑‍💻 Add `py.typed` to support type annotations (#4)
-  - 📦 Changed packaging ecosystem
-    - ➖ Remove `poetry`
-    - ➖ Remove `tox`
-    - ➕ Add `pip-tools` (manage dependencies)
-    - ➕ Add `hatch` (build & test)
-    - ➕ Add `twine` (publish)
-  - ✨ Support `python3.11`
-  - ⚰️ Drop support for `python3.6` (downloads from PyPI are under 1%)
+  - 🧑‍💻 Add `py.typed` to support type annotations (#4).
+  - 📦 Changed packaging ecosystem.
+    - ➖ Remove `poetry`.
+    - ➖ Remove `tox`.
+    - ➕ Add `pip-tools` (manage dependencies).
+    - ➕ Add `hatch` (build & test).
+    - ➕ Add `twine` (publish).
+  - ✨ Support `python3.11`.
+  - ⚰️ Drop support for `python3.6` (downloads from PyPI are under 1%).
 - color-hash **1.2.2** *(2022-10-17)*
-  - ✨ Add publish helper script
+  - ✨ Add publish helper script.
 - color-hash **1.2.1** *(2022-10-17)*
-  - 📝 Update docs
+  - 📝 Update docs.
 - color-hash **1.2.0** *(2022-10-17)*
-  - 🧑‍💻 Use typing supporting `python3.6`
+  - 🧑‍💻 Use typing supporting `python3.6`.
 - color-hash **1.1.0** *(2022-09-01)*
-  - ✅ Add tests
-  - 🚸 Add installation instructions
+  - ✅ Add tests.
+  - 🚸 Add installation instructions.
 - color-hash **1.0.4** *(2021-11-30)*
-  - Support only for `python3.6+`
-  - ✅ Add tests
+  - 🐍 Support only for `python3.6+`.
+  - ✅ Add tests.
 - color-hash **1.0.3** *(2020-12-04)*
-  - ⚰️ Drop support for `python2.x`
-  - 🎉 Handover of project maintenance
+  - ⚰️ Drop support for `python2.x`.
+  - 🎉 Handover of project maintenance.
 - color-hash **1.0.2** *(2016-07-08)*
   - ✨ Add ``crc32_hash`` function and set default hashfunc to that. It's not
     fully backwards-compatible, but I don't want to bump the version a lot for
