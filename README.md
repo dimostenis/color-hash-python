@@ -1,6 +1,6 @@
 # color-hash
 
-ColorHash is a lightweight Python library for generating deterministic colors from any object.
+ColorHash is a lightweight Python library for generating deterministic colors from objects' string representations.
 
 By calculating a color value based on an object's hash, it ensures consistent results: the same input will always yield the same color. This is particularly useful for UI elements like user avatars or category labels where visual consistency is required.
 
@@ -9,8 +9,8 @@ This module is a port of the original [color-hash Javascript library](https://gi
 Key features:
 - **Deterministic**: Same input always results in the same color.
 - **Customizable**: Influence hue range, lightness, and saturation.
-- **Zero Dependencies**: Lightweight and easy to integrate.
-- **Compatibility**: Supports Python 3.8+ and is tested up to Python 3.15.
+- **No runtime dependencies**: Lightweight and easy to integrate.
+- **Compatibility**: Supports Python 3.8–3.15.
 
 ## Quick Start
 
@@ -27,7 +27,7 @@ Key features:
 
 ## Installation
 
-Its hosted on PyPI.
+It is available on PyPI.
 
 ```bash
 pip install colorhash
@@ -48,8 +48,8 @@ You can influence every aspect of final color. **Default values** are following:
 ```python
 ColorHash(
     obj: Any,
-    lightness: Sequence[float] = (0.35, 0.5, 0.65),  # picks deterministically one
-    saturation: Sequence[float] = (0.35, 0.5, 0.65),  # picks deterministically one
+    lightness: Union[int, float, Sequence[Union[int, float]]] = (0.35, 0.5, 0.65),  # picks deterministically one
+    saturation: Union[int, float, Sequence[Union[int, float]]] = (0.35, 0.5, 0.65),  # picks deterministically one
     min_h: Optional[int] = None,  # hue, min 0
     max_h: Optional[int] = None,  # hue, max 360
 )
@@ -59,7 +59,7 @@ But be careful, **setting tight conditions may result in very similar colors**. 
 
 You can fix lightness or saturation to single value(s) by using sequence with 1 element (eg. `[0.5]`). Providing more values enables wider variety of options for ColorHash to choose from (deterministically).
 
-_Note: If you provide a single float instead of a sequence, it will be automatically wrapped in a list for convenience._
+_Note: If you provide a single integer or float instead of a sequence, it will be automatically wrapped in a list for convenience._
 
 | code                                  | hex       | color                           |
 |:--------------------------------------|:---------:|:-------------------------------:|
@@ -74,15 +74,17 @@ _Note: If you provide a single float instead of a sequence, it will be automatic
 | `ColorHash('boi', lightness=[0.95], saturation=[0.95])` | `#e6fee7` | ![#e6fee7](./docs/e6fee7.png) |
 
 You can set hue range or even fix it by setting `min_h` = `max_h`.
-If you set only `min_h` or `max_h`, the other will be defaulted to 0 or 360 respectively.
+If only `min_h` is set, `max_h` defaults to 360; if only `max_h` is set, `min_h` defaults to 0.
+When either bound is set, the hash selects one of 359 evenly spaced hue values across the inclusive range. Hue is measured in degrees. Hue values of 0° and 360° represent the same point on the hue circle and produce identical RGB values.
 
 | code                                  | hex       | color                           |
 |:--------------------------------------|:---------:|:-------------------------------:|
-| `ColorHash('hey', min_h=150)` | `#2d5886` | ![#2d5886](./docs/2d5886.png) |
-| `ColorHash('hey', min_h=300)` | `#862d6c` | ![#862d6c](./docs/862d6c.png) |
-| `ColorHash('hey', max_h=150)` | `#866e2d` | ![#866e2d](./docs/866e2d.png) |
-| `ColorHash('hey', min_h=150, max_h=360)` | `#2d5886` | ![#2d5886](./docs/2d5886.png) |
-| `ColorHash('hey', min_h=150, max_h=150)  # fixed hue` | `#2d8659` | ![#2d8659](./docs/2d8659.png) |
+| `ColorHash('hey', min_h=150)` | `#862d67` | ![#862d67](./docs/862d67.png) |
+| `ColorHash('hey', min_h=300)` | `#862d3d` | ![#862d3d](./docs/862d3d.png) |
+| `ColorHash('hey', max_h=150)` | `#2d862f` | ![#2d862f](./docs/2d862f.png) |
+| `ColorHash('hey', min_h=150, max_h=360)` | `#862d67` | ![#862d67](./docs/862d67.png) |
+| `ColorHash('hey', min_h=120, max_h=120)  # fixed green hue` | `#2d862d` | ![#2d862d](./docs/2d862d.png) |
+| `ColorHash('hey mama', min_h=120, max_h=120)  # fixed green hue` | `#53ac53` | ![#53ac53](./docs/53ac53.png) |
 
 Or you can let `ColorHash` decide between combination of many `lightness` and `saturation` options (mind `min_h` and `max_h` are equal in this example).
 
@@ -96,56 +98,74 @@ Finally some bad examples. When you set too strict rules, colors may be almost i
 
 | code                                  | hex       | color                           |
 |:--------------------------------------|:---------:|:-------------------------------:|
-| `ColorHash('lets', lightness=[0.95], saturation=[0.95], min_h=300)` | `#fee6f8` | ![#fee6f8](./docs/fee6f8.png) |
-| `ColorHash('break', lightness=[0.95], saturation=[0.95], min_h=300)` | `#fee6fb` | ![#fee6fb](./docs/fee6fb.png) |
-| `ColorHash('it', lightness=[0.95], saturation=[0.95], min_h=300)` | `#fee6fa` | ![#fee6fa](./docs/fee6fa.png) |
+| `ColorHash('lets', lightness=[0.95], saturation=[0.95], min_h=300)` | `#fee6ed` | ![#fee6ed](./docs/fee6ed.png) |
+| `ColorHash('break', lightness=[0.95], saturation=[0.95], min_h=300)` | `#fee6f6` | ![#fee6f6](./docs/fee6f6.png) |
+| `ColorHash('it', lightness=[0.95], saturation=[0.95], min_h=300)` | `#fee6f3` | ![#fee6f3](./docs/fee6f3.png) |
 | `ColorHash('here', min_h=150, max_h=150)` | `#6ce0a6` | ![#6ce0a6](./docs/6ce0a6.png) |
 | `ColorHash('goes', min_h=150, max_h=150)` | `#79d2a6` | ![#79d2a6](./docs/79d2a6.png) |
 | `ColorHash('color', min_h=150, max_h=150)` | `#6ce0a6` | ![#6ce0a6](./docs/6ce0a6.png) |
 
+### Hue mapping change in version 3.0.0
+
+Version **2.x.x** mapped a bounded hue range using only part of the requested interval (🐛). Version **3** fixes it and maps the hash across the full inclusive interval. Colors can change when the resulting interval has a nonzero width. Calls without hue bounds and calls with a fixed hue retain their previous colors.
+
+| Call | Version 2.x.x | Version 3.0.0 |
+|:--|:--:|:--:|
+| `ColorHash('hey', min_h=150)` | [![#2d5886](./docs/2d5886.png)](./docs/2d5886.png) `#2d5886` | [![#862d67](./docs/862d67.png)](./docs/862d67.png) `#862d67` |
+| `ColorHash('hey')` | [![#782d86](./docs/782d86.png)](./docs/782d86.png) `#782d86` | [![#782d86](./docs/782d86.png)](./docs/782d86.png) `#782d86` |
+| `ColorHash('hey', min_h=150, max_h=150)` | [![#2d8659](./docs/2d8659.png)](./docs/2d8659.png) `#2d8659` | [![#2d8659](./docs/2d8659.png)](./docs/2d8659.png) `#2d8659` |
+
 ## Changelog
 
-- color-hash **2.2.0** *(2026-03-12)*
-  - 🐛 Fixed hue calculation range mapping to correctly use the full spectrum when `min_h` and `max_h` are provided
-  - ✨ Support up to `python3.15` (tested on `3.15.0a6`)
+- color-hash **3.0.0** *(unreleased)*
+  - 🐛 Fixed hue range mapping: when `min_h` and/or `max_h` is supplied, hashes now span the full inclusive interval.
+  - 💥 BREAKING CHANGE: Colors may differ from version **2.x.x** when `min_h` or `max_h` is provided.
+- color-hash **2.3.0** *(2026-03-13)*
+  - ⚡️ Refactor for better performance
+- color-hash **2.2.1** *(2026-03-12)*
+  - ⏪ Reverts a hue calculation change in `2.2.0`, which is how it should be, but produces different colors then up until now
+- color-hash **2.2.0** *(2026-03-12)* (**YANKED**)
+  - 🐛 Fixed hue calculation range mapping to correctly use the full spectrum when `min_h` and `max_h` are provided.
+  - ✨ Support up to `python3.15` (tested on `3.15.0a6`).
+  - ⚰️ `python3.7` does not work any more for sure.
 - color-hash **2.1.0** *(2025-06-17)*
-  - ✨ Support up to `python3.14`
-  - ✨ Use `uv`
-  - ⚰️ `python3.7` is still supported and *shall* work, but not tested any more
+  - ✨ Support up to `python3.14`.
+  - ✨ Use `uv`.
+  - ⚰️ `python3.7` is still supported and *might* work, but not tested any more.
 - color-hash **2.0.0** *(2023-09-22)*
-  - ✨ Expose params to influence colors
-  - ✨ Runtime validation of input params
-  - 📝 Update docs for advanced usage
+  - ✨ Expose params to influence colors.
+  - ✨ Runtime validation of input params.
+  - 📝 Update docs for advanced usage.
 - color-hash **1.3.2** *(2023-09-21)*
-  - ⚡️ 30%+ speedup on `hsl2rgb()`
-  - ✅ Add tests for all named colors (1500+ tests)
+  - ⚡️ 30%+ speedup on `hsl2rgb()`.
+  - ✅ Add tests for all named colors (1500+ tests).
 - color-hash **1.3.1** *(2023-09-21)*
-  - 🐛 Handle missing `importlib-metadata` import
+  - 🐛 Handle missing `importlib-metadata` import.
 - color-hash **1.3.0** *(2023-09-20)*
-  - 🧑‍💻 Add `py.typed` to support type annotations (#4)
-  - 📦 Changed packaging ecosystem
-    - ➖ Remove `poetry`
-    - ➖ Remove `tox`
-    - ➕ Add `pip-tools` (manage dependencies)
-    - ➕ Add `hatch` (build & test)
-    - ➕ Add `twine` (publish)
-  - ✨ Support `python3.11`
-  - ⚰️ Drop support for `python3.6` (downloads from PyPI are under 1%)
+  - 🧑‍💻 Add `py.typed` to support type annotations (#4).
+  - 📦 Changed packaging ecosystem.
+    - ➖ Remove `poetry`.
+    - ➖ Remove `tox`.
+    - ➕ Add `pip-tools` (manage dependencies).
+    - ➕ Add `hatch` (build & test).
+    - ➕ Add `twine` (publish).
+  - ✨ Support `python3.11`.
+  - ⚰️ Drop support for `python3.6` (downloads from PyPI are under 1%).
 - color-hash **1.2.2** *(2022-10-17)*
-  - ✨ Add publish helper script
+  - ✨ Add publish helper script.
 - color-hash **1.2.1** *(2022-10-17)*
-  - 📝 Update docs
+  - 📝 Update docs.
 - color-hash **1.2.0** *(2022-10-17)*
-  - 🧑‍💻 Use typing supporting `python3.6`
+  - 🧑‍💻 Use typing supporting `python3.6`.
 - color-hash **1.1.0** *(2022-09-01)*
-  - ✅ Add tests
-  - 🚸 Add installation instructions
+  - ✅ Add tests.
+  - 🚸 Add installation instructions.
 - color-hash **1.0.4** *(2021-11-30)*
-  - Support only for `python3.6+`
-  - ✅ Add tests
+  - 🐍 Support only for `python3.6+`.
+  - ✅ Add tests.
 - color-hash **1.0.3** *(2020-12-04)*
-  - ⚰️ Drop support for `python2.x`
-  - 🎉 Handover of project maintenance
+  - ⚰️ Drop support for `python2.x`.
+  - 🎉 Handover of project maintenance.
 - color-hash **1.0.2** *(2016-07-08)*
   - ✨ Add ``crc32_hash`` function and set default hashfunc to that. It's not
     fully backwards-compatible, but I don't want to bump the version a lot for

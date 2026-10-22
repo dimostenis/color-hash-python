@@ -1,13 +1,15 @@
+from __future__ import annotations
+
 from pathlib import Path
 
 from PIL import Image
 
 # needed for eval()
-from colorhash import ColorHash  # noqa
+from colorhash import ColorHash  # ruff: ignore[unused-import]
 
 NEW_TABLE_SEPARATOR = object()  # sentinel
 
-lst = [
+lst: list[object] = [
     NEW_TABLE_SEPARATOR,
     "ColorHash('hey')",
     "ColorHash('oh')",
@@ -27,11 +29,12 @@ lst = [
     "ColorHash('hey', min_h=300)",
     "ColorHash('hey', max_h=150)",
     "ColorHash('hey', min_h=150, max_h=360)",
-    "ColorHash('hey', min_h=150, max_h=150)  # fixed hue",
+    "ColorHash('hey', min_h=120, max_h=120)  # fixed hue",
+    "ColorHash('hey mama', min_h=120, max_h=120)  # fixed hue",
     NEW_TABLE_SEPARATOR,
-    "ColorHash('stick', min_h=65, max_h=65, saturation=[x/10 for x in range(1, 10)], lightness=[x/10 for x in range(1, 10)])",  # noqa
-    "ColorHash('with', min_h=65, max_h=65, saturation=[x/10 for x in range(1, 10)], lightness=[x/10 for x in range(1, 10)])",  # noqa
-    "ColorHash('one', min_h=65, max_h=65, saturation=[x/10 for x in range(1, 10)], lightness=[x/10 for x in range(1, 10)])",  # noqa
+    "ColorHash('stick', min_h=65, max_h=65, saturation=[x/10 for x in range(1, 10)], lightness=[x/10 for x in range(1, 10)])",  # ruff: ignore[line-too-long]
+    "ColorHash('with', min_h=65, max_h=65, saturation=[x/10 for x in range(1, 10)], lightness=[x/10 for x in range(1, 10)])",  # ruff: ignore[line-too-long]
+    "ColorHash('one', min_h=65, max_h=65, saturation=[x/10 for x in range(1, 10)], lightness=[x/10 for x in range(1, 10)])",  # ruff: ignore[line-too-long]
     NEW_TABLE_SEPARATOR,
     "ColorHash('lets', lightness=[0.95], saturation=[0.95], min_h=300)",
     "ColorHash('break', lightness=[0.95], saturation=[0.95], min_h=300)",
@@ -44,10 +47,11 @@ lst = [
 WIDTH = 120
 HEIGHT = 25
 OUT = Path("docs")
-HEADER = "| code                                  | hex       | color                           |\n|:--------------------------------------|:---------:|:-------------------------------:|"  # noqa
+HEADER = "| code                                  | hex       | color                           |\n|:--------------------------------------|:---------:|:-------------------------------:|"  # ruff: ignore[line-too-long]
 
 # delete old tiles
-[x.unlink() for x in OUT.glob("*.png")]
+for path in OUT.glob("*.png"):
+    path.unlink()
 
 # gen tiles + docs table text
 for code in lst:
@@ -57,6 +61,7 @@ for code in lst:
         print(HEADER)
         continue
 
+    assert isinstance(code, str)
     hex_color = eval(code).hex
     tile = Image.new("RGB", (WIDTH, HEIGHT), hex_color)
 

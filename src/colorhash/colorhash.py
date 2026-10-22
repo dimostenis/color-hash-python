@@ -26,6 +26,8 @@ from typing import Union
 
 MIN_HUE: Final = 0
 MAX_HUE: Final = 360  # full hue circle in degrees
+HUE_BUCKET_COUNT: Final = 359
+MAX_HUE_BUCKET_INDEX: Final = HUE_BUCKET_COUNT - 1
 
 # Pre-computed fractions used in HSL → RGB conversion; avoids repeated float
 # division at every call to hue_to_rgb / hsl2rgb.
@@ -41,9 +43,10 @@ def crc32_hash(obj: Any) -> int:
     Generate a hash for ``obj``.
 
     This function first converts the object to a string and encodes it into
-    UTF-8, then calculates and returns the CRC-32 checksum of the result. The
-    hash is guaranteed to be as stable as the result of the object's ``__str__``
-    method.
+    UTF-8, then calculates and returns the CRC-32 checksum of the result. Equal
+    string representations produce equal hashes. An object's default string
+    representation may include a memory address, so different instances of the
+    same type may produce different hashes.
     """
     bs = str(obj).encode("utf-8")
     # Mask to unsigned 32-bit: crc32 returns a signed int on some platforms.
@@ -94,12 +97,12 @@ def hsl2rgb(hsl: tuple[float, float, float]) -> tuple[int, int, int]:
         The hue value should be in degrees (0-360), while saturation and lightness
         should be in the range 0 to 1.
     """
-    h, s, l = hsl  # noqa: E741
+    h, s, l = hsl  # ruff: ignore[ambiguous-variable-name]
     # Normalise hue from [0, 360] to [0, 1] for the hue_to_rgb helper.
     h /= MAX_HUE
     # Standard HSL intermediate values (W3C algorithm):
     #   q is the "bright" boundary, p is the "dark" boundary.
-    q = l * (1 + s) if l < 0.5 else l + s - l * s  # noqa: PLR2004
+    q = l * (1 + s) if l < 0.5 else l + s - l * s  # ruff: ignore[magic-value-comparison]
     p = 2 * l - q
 
     # Each channel is sampled at a different point on the hue circle (+120°, 0°, -120°).
@@ -123,6 +126,47 @@ def rgb2hex(rgb: tuple[int, int, int]) -> str:
         raise ValueError(rgb) from exc
 
 
+def _normalize_parameter(
+    values: ScalarOrSequence,
+    name: str,
+) -> Sequence[IntOrFloat]:
+    """Normalize and validate one lightness or saturation parameter."""
+    if isinstance(values, (float, int)):
+        values = [values]
+
+    if len(values) == 0:
+        msg = f"{name} must not be empty"
+        raise ValueError(msg)
+    if not all(0.0 <= value <= 1.0 for value in values):
+        msg = f"{name} params must be in range (0.0, 1.0)"
+        raise ValueError(msg)
+
+    return values
+
+
+def _validate_hue_bounds(
+    min_h: int | None,
+    max_h: int | None,
+) -> tuple[int | None, int | None]:
+    """Fill in a missing hue bound and validate the resulting range."""
+    if min_h is None and max_h is not None:
+        min_h = MIN_HUE
+    if min_h is not None and max_h is None:
+        max_h = MAX_HUE
+
+    if min_h is not None and max_h is not None:
+        valid = (
+            MIN_HUE <= min_h <= MAX_HUE
+            and MIN_HUE <= max_h <= MAX_HUE
+            and min_h <= max_h
+        )
+        if not valid:
+            msg = "min_h and max_h must be in range [0, 360] with min_h <= max_h"
+            raise ValueError(msg)
+
+    return min_h, max_h
+
+
 def color_hash(
     obj: Any,
     lightness: ScalarOrSequence = (0.35, 0.5, 0.65),
@@ -135,48 +179,31 @@ def color_hash(
 
     This function takes the same arguments as the ``ColorHash`` class.
 
+    Hue bounds are inclusive degrees in [0, 360]. If only one bound is given,
+    the missing bound defaults to 0 or 360. The hash selects one of 359 evenly
+    spaced values across that interval, including both endpoints. If neither
+    bound is given, the hash bucket (0 through 358) is used directly as degrees.
+    Hue 360 produces the same RGB color as hue 0.
+
     Returns:
         A ``(H, S, L)`` tuple.
     """
-    # Accept a bare number as a single-element sequence.
-    if isinstance(lightness, (float, int)):
-        lightness = [lightness]
-    if isinstance(saturation, (float, int)):
-        saturation = [saturation]
-
-    if not all(0.0 <= x <= 1.0 for x in lightness):
-        msg = "lightness params must be in range (0.0, 1.0)"
-        raise ValueError(msg)
-    if not all(0.0 <= x <= 1.0 for x in saturation):
-        msg = "saturation params must be in range (0.0, 1.0)"
-        raise ValueError(msg)
-
-    # If only one bound is given, fill in the opposite extreme.
-    if min_h is None and max_h is not None:
-        min_h = MIN_HUE
-    if min_h is not None and max_h is None:
-        max_h = MAX_HUE
+    lightness_values = _normalize_parameter(lightness, "lightness")
+    saturation_values = _normalize_parameter(saturation, "saturation")
 
     hash_val = crc32_hash(obj)
-    # Map the hash to a hue in [0, 358] (% 359 keeps 0 and 359 equidistant).
-    h: float = hash_val % 359
+    min_h, max_h = _validate_hue_bounds(min_h, max_h)
+    # Map the hash to one of 359 hue buckets, indexed from 0 through 358.
+    h: float = hash_val % HUE_BUCKET_COUNT
     if min_h is not None and max_h is not None:
-        if not (
-            MIN_HUE <= min_h <= MAX_HUE
-            and MIN_HUE <= max_h <= MAX_HUE
-            and min_h <= max_h
-        ):
-            range_msg = "min_h and max_h must be in range [0, 360] with min_h <= max_h"
-            raise ValueError(range_msg)
-        # NOTE: dividing by 1000 instead of 359 intentionally limits the reachable range
-        # — this is a known issue and will be fixed as a breaking change in 3.0.0.
-        h = (h / 1000) * (max_h - min_h) + min_h
+        # Scale across the inclusive bounds so both endpoints are reachable.
+        h = min_h + (h / MAX_HUE_BUCKET_INDEX) * (max_h - min_h)
     # Consume further bits of the hash to pick saturation and lightness
     # independently from the hue selection above.
     hash_val //= MAX_HUE
-    s = saturation[hash_val % len(saturation)]
-    hash_val //= len(saturation)
-    l = lightness[hash_val % len(lightness)]  # noqa
+    s = saturation_values[hash_val % len(saturation_values)]
+    hash_val //= len(saturation_values)
+    l = lightness_values[hash_val % len(lightness_values)]  # ruff: ignore[ambiguous-variable-name]
 
     return (h, s, l)
 
@@ -193,8 +220,16 @@ class ColorHash:
         saturation: a range of values, one of which will be picked for the
                     saturation component of the result. Can also be a single
                     number.
-        min_h: if set, limit the hue component to this lower value.
-        max_h: if set, limit the hue component to this upper value.
+        min_h: inclusive lower hue bound in degrees from 0 to 360. If set alone,
+               ``max_h`` defaults to 360.
+        max_h: inclusive upper hue bound in degrees from 0 to 360. If set alone,
+               ``min_h`` defaults to 0.
+
+    Hue mapping:
+        If either bound is provided, the hash selects one of 359 evenly spaced
+        hue values across the inclusive interval. If neither is provided, the
+        hash bucket (0 through 358) is used directly as degrees. Hue 360 maps to
+        the same RGB color as hue 0.
 
     Attributes:
         hsl: HSL representation of the color value.
